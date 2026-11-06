@@ -17,7 +17,7 @@ export const CITY_CLUES: { markerId: string; text: string }[] = [
   { markerId: "igreja", text: "A igreja fica na Avenida Amor-Perfeito, entre as ruas Hortênsia e Tulipa." },
   {
     markerId: "parque",
-    text: "O parque fica na esquina da Rua Girassol com a Avenida Cravo, na quadra à esquerda da avenida e abaixo da Rua Girassol.",
+    text: "O parque fica na mesma quadra da casa do Davi, entre a Rua Girassol e a Rua Margarida, perto da Rua Rosa.",
   },
   { markerId: "mercado", text: "O mercado fica na Rua Tulipa, em frente ao restaurante." },
   { markerId: "shopping", text: "O shopping fica na Rua Rosa, em frente ao aeroporto." },
