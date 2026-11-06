@@ -55,12 +55,16 @@ export function RouteScreen(p: Props) {
       </header>
       <div className="flex flex-1 gap-5">
         <div className="self-start rounded-2xl border-4 border-secondary bg-map-frame p-2 shadow-card">
-          <CityMap width={760}>
-            <g id="layer-route" pointerEvents="none">
-              {p.route.length > 1 && (
-                <polyline points={pts} fill="none" stroke="var(--route)" strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" opacity={0.85} />
-              )}
-            </g>
+          <CityMap
+            width={748}
+            below={
+              p.route.length > 1 ? (
+                <g id="layer-route" pointerEvents="none">
+                  <polyline points={pts} fill="none" stroke="var(--route)" strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" opacity={0.85} />
+                </g>
+              ) : null
+            }
+          >
             <g id="layer-markers">
               {ROUTE_ORDER.map((m) => {
                 const t = targetById(markerById(m).targetId);

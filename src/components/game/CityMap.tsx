@@ -20,9 +20,14 @@ export function clientToMap(svg: SVGSVGElement, clientX: number, clientY: number
   return { x: p.x, y: p.y, inside };
 }
 
-type Props = { children?: ReactNode; width: number } & Omit<SVGProps<SVGSVGElement>, "ref" | "width">;
+type Props = {
+  children?: ReactNode;
+  /** conteúdo desenhado abaixo dos rótulos de rua (ex.: a linha do trajeto) */
+  below?: ReactNode;
+  width: number;
+} & Omit<SVGProps<SVGSVGElement>, "ref" | "width">;
 
-export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ children, width, ...rest }, ref) {
+export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ children, below, width, ...rest }, ref) {
   return (
     <svg
       ref={ref}
@@ -56,6 +61,8 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
             fill="var(--map-road)"
           />
         </g>
+        {/* camada do trajeto: fica abaixo dos nomes de rua para não tapá-los */}
+        {below}
         {/* camada: rótulos */}
         <g id="layer-labels" fontFamily="Nunito, sans-serif" fontWeight={900} fontSize={11.5} fill="var(--map-label)" pointerEvents="none">
           {LABELS.map((l) => (

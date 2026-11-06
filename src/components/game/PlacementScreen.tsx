@@ -76,7 +76,7 @@ export function PlacementScreen(p: Props) {
     e.preventDefault();
     (e.target as Element).setPointerCapture?.(e.pointerId);
     // altura de referência: marcador no mapa (unidades do viewBox → px) ou no banco (84px)
-    const baseH = p.placements[id] ? MARKER_H * (MAP_W / VIEWBOX.w) : 84;
+    const baseH = p.placements[id] ? MARKER_H * (MAP_W / VIEWBOX.w) : 72;
     setDrag({ id, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false, baseH });
   };
   const move = (e: RPointerEvent) => {
@@ -187,7 +187,7 @@ export function PlacementScreen(p: Props) {
         </div>
 
         {/* painel */}
-        <aside className="flex w-[360px] flex-col gap-3">
+        <aside className="flex w-[360px] flex-col gap-2.5">
           <section className="rounded-2xl border-4 border-primary bg-card p-4 shadow-card">
             <div className="mb-2 flex items-center justify-between gap-2">
               <span className="rounded-full bg-primary px-3.5 py-1 font-display text-[15px] font-bold text-primary-foreground">
@@ -224,7 +224,7 @@ export function PlacementScreen(p: Props) {
                     aria-label={m.label}
                     className={`touch-none rounded-xl border-2 border-transparent p-1 transition ${selected === id ? "border-secondary bg-secondary/20 ring-4 ring-ring" : "hover:bg-muted"} cursor-grab`}
                   >
-                    <img src={m.img} alt="" draggable={false} className={`mx-auto h-[84px] w-auto ${drag?.id === id && drag.moved ? "opacity-30" : ""}`} />
+                    <img src={m.img} alt="" draggable={false} className={`mx-auto h-[72px] w-auto ${drag?.id === id && drag.moved ? "opacity-30" : ""}`} />
                   </button>
                 );
               })}
