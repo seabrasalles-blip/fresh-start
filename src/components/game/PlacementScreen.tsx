@@ -43,7 +43,11 @@ interface Props {
   helpItems: string[];
 }
 
-type Drag = { id: string; sx: number; sy: number; x: number; y: number; moved: boolean };
+type Drag = { id: string; sx: number; sy: number; x: number; y: number; moved: boolean; baseH: number };
+
+const MAP_W = 760;
+/** Fator de ampliação do marcador somente durante o arraste. */
+const DRAG_SCALE = 1.35;
 
 export function PlacementScreen(p: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -51,7 +55,8 @@ export function PlacementScreen(p: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [cursor, setCursor] = useState<Pos>({ x: VIEWBOX.x + VIEWBOX.w / 2, y: VIEWBOX.y + VIEWBOX.h / 2 });
-  const [showBg, setShowBg] = useState(true);
+  // na 2ª etapa as casas começam ocultas para não atrapalhar o parque
+  const [showBg, setShowBg] = useState(() => !p.background?.length);
 
   const ids = p.clues.map((c) => c.markerId);
   const bank = ids.filter((id) => !p.placements[id]);
@@ -69,7 +74,9 @@ export function PlacementScreen(p: Props) {
     if (isLocked(id) || p.done) return;
     e.preventDefault();
     (e.target as Element).setPointerCapture?.(e.pointerId);
-    setDrag({ id, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false });
+    // altura de referência: marcador no mapa (unidades do viewBox → px) ou no banco (84px)
+    const baseH = p.placements[id] ? MARKER_H * (MAP_W / VIEWBOX.w) : 84;
+    setDrag({ id, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false, baseH });
   };
   const move = (e: RPointerEvent) => {
     if (!drag) return;
@@ -130,15 +137,30 @@ export function PlacementScreen(p: Props) {
         <div className="rounded-2xl border-4 border-secondary bg-map-frame p-2 shadow-card self-start">
           <CityMap
             ref={svgRef}
-            width={760}
+            width={MAP_W}
             tabIndex={0}
             onClick={mapClick}
             onKeyDown={mapKey}
             aria-label={selected ? `Mapa. Use as setas para escolher o lugar de ${markerById(selected).label} e Enter para colocar.` : "Mapa da cidade de Florais"}
             className={`block touch-none select-none rounded-xl ${selected ? "cursor-crosshair" : ""}`}
           >
-            <g id="layer-background-markers">
-              {showBg && p.background?.map((id) => <PlacedMarker key={id} id={id} pos={targetById(markerById(id).targetId)} locked dim />)}
+            <g id="layer-background-markers" pointerEvents="none">
+              {showBg &&
+                p.background?.map((id) => {
+                  const t = targetById(markerById(id).targetId);
+                  // se um marcador da etapa atual cobre a casa, desloca a casa e liga uma linha ao alvo real
+                  const clash = ids.some((fid) => {
+                    const pl = p.placements[fid];
+                    return pl && Math.hypot(pl.x - t.x, pl.y - t.y) < 40;
+                  });
+                  const pos = clash ? { x: t.x + 34, y: t.y + 30 } : t;
+                  return (
+                    <g key={id}>
+                      {clash && <line x1={pos.x} y1={pos.y} x2={t.x} y2={t.y} stroke="var(--muted-foreground)" strokeWidth={1.5} strokeDasharray="3 3" />}
+                      <PlacedMarker id={id} pos={pos} locked dim />
+                    </g>
+                  );
+                })}
             </g>
             <g id="layer-markers">
               {ids.filter((id) => p.placements[id]).map((id) => (
@@ -236,8 +258,8 @@ export function PlacementScreen(p: Props) {
           <img
             src={markerById(drag.id).img}
             alt=""
-            className="pointer-events-none fixed z-50 h-24 w-auto -translate-x-1/2 -translate-y-1/2 drop-shadow-xl"
-            style={{ left: drag.x, top: drag.y }}
+            className="pointer-events-none fixed z-50 w-auto -translate-x-1/2 -translate-y-1/2 drop-shadow-xl"
+            style={{ left: drag.x, top: drag.y, height: drag.baseH * DRAG_SCALE }}
           />,
           document.body,
         )}
