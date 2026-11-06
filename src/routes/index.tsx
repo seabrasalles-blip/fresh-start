@@ -10,10 +10,12 @@ import { CITY_CLUES, HOUSE_CLUES } from "@/game/clues";
 import { validatePlacement, targetAt, targetById, markerById, type Phase } from "@/game/locations";
 import { START_NODE } from "@/game/mapGraph";
 import { routeMessage, validateRoute } from "@/game/routeValidator";
+import { canGoMuchShorter, compareRoutes, minimumRouteLength, routeLength } from "@/game/routeLength";
 import capa from "@/assets/capa/capa_como_chegar_aprovada.png.asset.json";
 import ninaApresentando from "@/assets/personagens/nina_apresentando.png.asset.json";
 import ninaExplicando from "@/assets/personagens/nina_explicando.png.asset.json";
 import ninaComemorando from "@/assets/personagens/nina_comemorando.png.asset.json";
+import ninaPensativa from "@/assets/personagens/nina_pensativa.png.asset.json";
 import daviApresentando from "@/assets/personagens/davi_apresentando.png.asset.json";
 import ninaEDavi from "@/assets/personagens/nina_e_davi_final.png.asset.json";
 
@@ -33,12 +35,15 @@ export const Route = createFileRoute("/")({
 
 type Screen =
   | "cover" | "intro" | "locations" | "locationsFeedback" | "routeIntro" | "route"
-  | "routeFeedback" | "cityIntro" | "cityLocations" | "end" | "review";
+  | "routeFeedback" | "routeChallenge" | "cityIntro" | "cityLocations" | "end" | "review";
 
 type Feedback = { kind: "info" | "warn" | "success"; text: string } | null;
 
 const HOUSE_IDS = HOUSE_CLUES.map((c) => c.markerId);
 const CITY_IDS = CITY_CLUES.map((c) => c.markerId);
+
+/** Menor distância possível cumprindo a ordem dos encontros (unidades do mapa, sem escala real). */
+const MIN_LEN = minimumRouteLength();
 
 const PLACE_HELP = [
   "Leia a pista e procure as ruas no mapa.",
@@ -54,9 +59,11 @@ function Index() {
   const [placeFb, setPlaceFb] = useState<Feedback>(null);
   const [route, setRoute] = useState<string[]>([START_NODE]);
   const [routeFb, setRouteFb] = useState<{ kind: "warn" | "success"; text: string } | null>(null);
+  /** trajetos válidos já concluídos: o primeiro fica guardado para comparação */
+  const [attempts, setAttempts] = useState<string[][]>([]);
 
   const reset = () => {
-    setPlacements({}); setLocked([]); setPlaceFb(null); setRoute([START_NODE]); setRouteFb(null); setScreen("cover");
+    setPlacements({}); setLocked([]); setPlaceFb(null); setRoute([START_NODE]); setRouteFb(null); setAttempts([]); setScreen("cover");
   };
 
   const onPlace = (id: string, pos: Pos | null) => {
@@ -94,6 +101,22 @@ function Index() {
     setPlaceFb({ kind: "success", text: successText });
     setScreen(next);
   };
+
+  // ---- leitura do trajeto para o feedback e o desafio opcional do caminho mais curto ----
+  const firstLen = attempts.length ? routeLength(attempts[0]!) : 0;
+  const secondLen = attempts.length > 1 ? routeLength(attempts[1]!) : null;
+  const cmp = secondLen === null ? null : compareRoutes(firstLen, secondLen);
+  const alreadyMinimal = attempts.length === 1 && !canGoMuchShorter(firstLen, MIN_LEN);
+  const routeOkText =
+    cmp === "shorter"
+      ? "Muito bem! O seu segundo caminho é mais curto que o primeiro: você descobriu um jeito melhor de passar pelas casas na mesma ordem!"
+      : cmp === "longer"
+        ? "Os dois caminhos passaram pelas casas na ordem certa! Desta vez o primeiro foi o mais curto — e você pode tentar de novo quando quiser."
+        : cmp === "same"
+          ? "Os dois caminhos têm exatamente o mesmo tamanho! Os dois estão certos."
+          : alreadyMinimal
+            ? "Você já encontrou um dos caminhos mais curtos, passando pelas casas na ordem certa. Parabéns!"
+            : routeMessage({ ok: true, error: null, reached: 6, next: null });
 
   return (
     <Stage>
@@ -151,10 +174,18 @@ function Index() {
           setFeedback={setRouteFb}
           done={false}
           onAdvance={() => {}}
+          note={attempts.length ? "Seu primeiro caminho está guardado. Tente um mais curto!" : undefined}
           onVerify={() => {
             const r = validateRoute(route);
-            if (r.ok) { setRouteFb(null); setScreen("routeFeedback"); }
-            else setRouteFb({ kind: "warn", text: routeMessage(r) });
+            if (!r.ok) { setRouteFb({ kind: "warn", text: routeMessage(r) }); return; }
+            setRouteFb(null);
+            if (attempts.length === 0) {
+              setAttempts([route]);
+              setScreen(canGoMuchShorter(routeLength(route), MIN_LEN) ? "routeChallenge" : "routeFeedback");
+            } else {
+              setAttempts((a) => [...a, route]);
+              setScreen("routeFeedback");
+            }
           }}
         />
       )}
@@ -164,8 +195,27 @@ function Index() {
           character={ninaComemorando.url}
           characterAlt="Nina comemorando"
           name="Nina"
-          text={routeMessage({ ok: true, error: null, reached: 6, next: null })}
+          text={routeOkText}
           actions={<Button variant="game" size="game" onClick={() => setScreen("cityIntro")}>Continuar <ArrowRight /></Button>}
+        />
+      )}
+
+      {screen === "routeChallenge" && (
+        <DialogScene
+          character={ninaPensativa.url}
+          characterAlt="Nina pensando"
+          name="Nina"
+          text="Muito bem! Você encontrou um caminho até a escola! Mas será que existe um caminho mais curto, passando pelas casas na mesma ordem?"
+          actions={
+            <>
+              <Button variant="game" size="game" onClick={() => { setRoute([START_NODE]); setRouteFb(null); setScreen("route"); }}>
+                <RotateCcw /> Tentar outro caminho
+              </Button>
+              <Button variant="gameBlue" size="game" onClick={() => setScreen("cityIntro")}>
+                Continuar a aventura <ArrowRight />
+              </Button>
+            </>
+          }
         />
       )}
 
@@ -214,7 +264,7 @@ function Index() {
       {screen === "review" && (
         <RouteScreen
           readOnly
-          route={route}
+          route={attempts.at(-1) ?? route}
           setRoute={() => {}}
           feedback={null}
           setFeedback={() => {}}
