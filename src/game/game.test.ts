@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { MARKERS, TARGETS, markersOf, targetAt, targetById, validatePlacement } from "./locations";
+import { MARKERS, TARGETS, markersOf, targetAt, targetById, validatePlacement, displayOf, PARQUE_DISPLAY, MARKER_BOX } from "./locations";
 import { GRAPH_NODES, ROUTE_ORDER, node, START_NODE, accessNodeOf, edgesList, isAdjacent, shortestPath } from "./mapGraph";
 import { validateRoute } from "./routeValidator";
+import { canGoMuchShorter, compareRoutes, minimumRouteLength, routeLength, shortestDistance, shortestRoute } from "./routeLength";
 
 const houseIds = markersOf("houses").map((m) => m.id);
 const cityIds = markersOf("city").map((m) => m.id);
@@ -148,5 +149,67 @@ describe("validateRoute", () => {
     const partial = valid.slice(0, -1);
     expect(validateRoute(partial).ok).toBe(false);
     expect(validateRoute([...partial, valid.at(-1)!]).ok).toBe(true);
+  });
+});
+
+describe("comprimento das rotas (desafio opcional do caminho mais curto)", () => {
+  const min = minimumRouteLength();
+  const natural = buildRoute(ROUTE_ORDER);
+
+  it("soma o comprimento de cada trecho percorrido", () => {
+    let manual = 0;
+    for (let i = 1; i < natural.length; i++) {
+      const a = node(natural[i - 1]!), b = node(natural[i]!);
+      manual += Math.hypot(a.x - b.x, a.y - b.y);
+    }
+    expect(routeLength(natural)).toBeCloseTo(manual, 8);
+  });
+
+  it("o menor caminho possível continua válido pela ordem dos encontros", () => {
+    const { path, distance } = shortestRoute();
+    expect(validateRoute(path).ok).toBe(true);
+    expect(routeLength(path)).toBeCloseTo(distance, 8);
+    expect(distance).toBeLessThanOrEqual(routeLength(natural) + 1e-9);
+  });
+
+  it("menos ruas não significa menos distância", () => {
+    const bfs = shortestPath(accessNodeOf("nina"), accessNodeOf("bia"))!;
+    const dij = shortestDistance(accessNodeOf("nina"), accessNodeOf("bia"))!;
+    expect(dij.distance).toBeLessThanOrEqual(routeLength(bfs) + 1e-9);
+  });
+
+  it("só oferece o desafio quando dá para encurtar mais de 5%", () => {
+    expect(canGoMuchShorter(min * 1.1, min)).toBe(true);
+    expect(canGoMuchShorter(min * 1.02, min)).toBe(false);
+    expect(canGoMuchShorter(min, min)).toBe(false);
+  });
+
+  it("compara as duas tentativas do aluno", () => {
+    expect(compareRoutes(min * 1.2, min)).toBe("shorter");
+    expect(compareRoutes(min, min * 1.2)).toBe("longer");
+    expect(compareRoutes(min, min)).toBe("same");
+  });
+});
+
+describe("posição de exibição do parque", () => {
+  it("é diferente do ponto de validação e continua dentro da quadra", () => {
+    const t = targetById("t-parque");
+    expect(t.display).toEqual(PARQUE_DISPLAY);
+    expect(PARQUE_DISPLAY.x).toBeGreaterThan(t.rect!.x0);
+    expect(PARQUE_DISPLAY.x).toBeLessThan(t.rect!.x1);
+    expect(PARQUE_DISPLAY.y).toBeGreaterThan(t.rect!.y0);
+    expect(PARQUE_DISPLAY.y).toBeLessThan(t.rect!.y1);
+    expect(targetAt(PARQUE_DISPLAY.x, PARQUE_DISPLAY.y, "city")).toBe("t-parque");
+  });
+
+  it("não encobre a casa do Davi nem desloca a casa no mapa", () => {
+    const d = displayOf(targetById("t-parque"));
+    const davi = targetById("t-davi");
+    expect(d.x + MARKER_BOX.w / 2).toBeLessThanOrEqual(davi.x - MARKER_BOX.w / 2);
+    expect(Math.hypot(d.x - davi.x, d.y - davi.y)).toBeGreaterThan(40);
+  });
+
+  it("os demais marcadores são exibidos exatamente no ponto validado", () => {
+    for (const t of TARGETS.filter((x) => !x.display)) expect(displayOf(t)).toEqual({ x: t.x, y: t.y });
   });
 });
