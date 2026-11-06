@@ -9,7 +9,7 @@ export const HOUSE_CLUES: { markerId: string; text: string }[] = [
 
 export const CITY_CLUES: { markerId: string; text: string }[] = [
   { markerId: "igreja", text: "A igreja fica na Avenida Amor-Perfeito, entre as ruas Hortênsia e Tulipa." },
-  { markerId: "parque", text: "O parque fica na Avenida Cravo, na esquina com a Rua Girassol, em frente à prefeitura." },
+  { markerId: "parque", text: "O parque fica na esquina da Avenida Cravo com a Rua Girassol, na quadra que fica do outro lado dessas duas vias em relação à prefeitura." },
   { markerId: "mercado", text: "O mercado fica na Rua Tulipa, em frente ao restaurante." },
   { markerId: "shopping", text: "O shopping fica na Rua Rosa, em frente ao aeroporto." },
   { markerId: "sorveteria", text: "A sorveteria fica na Avenida Copo-de-Leite, entre a Rua Hortênsia e a Avenida Cravo." },
