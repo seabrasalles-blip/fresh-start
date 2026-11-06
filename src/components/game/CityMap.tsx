@@ -50,7 +50,17 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
         {/* camada: quadras */}
         <g id="layer-blocks">
           {BLOCKS.map((b, i) => (
-            <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} rx={4} fill="var(--map-block)" stroke="var(--map-block-edge)" strokeWidth={1} />
+            <rect
+              key={i}
+              x={b.x}
+              y={b.y}
+              width={b.w}
+              height={b.h}
+              rx={7}
+              fill={i % 2 === 0 ? "var(--map-block)" : "var(--map-block-alt)"}
+              stroke="var(--map-block-edge)"
+              strokeWidth={1}
+            />
           ))}
           {/* beco do final da Rua Tulipa */}
           <rect
@@ -64,7 +74,7 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
         {/* camada do trajeto: fica abaixo dos nomes de rua para não tapá-los */}
         {below}
         {/* camada: rótulos */}
-        <g id="layer-labels" fontFamily="Nunito, sans-serif" fontWeight={900} fontSize={11.5} fill="var(--map-label)" pointerEvents="none">
+        <g id="layer-labels" fontFamily="Nunito, sans-serif" fontWeight={900} fontSize={12.5} fill="var(--map-label)" pointerEvents="none">
           {LABELS.map((l) => (
             <text
               key={l.text}
@@ -89,9 +99,9 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
             const Icon = ICONS[r.id];
             return (
               <g key={r.id}>
-                <rect x={r.x - 13} y={r.y - 17} width={26} height={24} rx={6} fill="var(--card)" stroke="var(--secondary)" strokeWidth={1.5} />
-                <Icon x={r.x - 9} y={r.y - 14} width={18} height={18} color="var(--secondary)" strokeWidth={2.2} />
-                <text x={r.x} y={r.y + 15} textAnchor="middle" fontSize={8} fontWeight={800} fontFamily="Nunito, sans-serif" fill="var(--foreground)" stroke="var(--card)" strokeWidth={2.5} paintOrder="stroke">
+                <rect x={r.x - 14} y={r.y - 18} width={28} height={26} rx={7} fill="var(--card)" stroke="var(--secondary)" strokeWidth={1.5} />
+                <Icon x={r.x - 10} y={r.y - 15} width={20} height={20} color="var(--secondary)" strokeWidth={2.2} />
+                <text x={r.x} y={r.y + 16} textAnchor="middle" fontSize={9} fontWeight={800} fontFamily="Nunito, sans-serif" fill="var(--foreground)" stroke="var(--card)" strokeWidth={2.5} paintOrder="stroke">
                   {r.label}
                 </text>
               </g>

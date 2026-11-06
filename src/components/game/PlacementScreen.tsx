@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button";
 import { CityMap, clientToMap } from "./CityMap";
 import { HelpButton } from "./HelpModal";
 import { SpeakButton } from "./SpeakButton";
-import { MARKER_BOX, markerById, targetById } from "@/game/locations";
+import { MARKER_BOX, markerById, markerSize, targetById } from "@/game/locations";
 import { VIEWBOX } from "@/game/mapData";
 
 export type Pos = { x: number; y: number };
-const MARKER_W = MARKER_BOX.w;
 const MARKER_H = MARKER_BOX.h;
 
 export function PlacedMarker({ id, pos, locked, selected, dim }: { id: string; pos: Pos; locked?: boolean; selected?: boolean; dim?: boolean }) {
   const m = markerById(id);
+  const size = markerSize(id);
   return (
     <g opacity={dim ? 0.55 : 1}>
       {selected && <circle cx={pos.x} cy={pos.y} r={32} fill="none" stroke="var(--ring)" strokeWidth={3} strokeDasharray="4 3" />}
-      <image href={m.img} x={pos.x - MARKER_W / 2} y={pos.y - MARKER_H / 2} width={MARKER_W} height={MARKER_H} />
+      <image href={m.img} x={pos.x - size.w / 2} y={pos.y - size.h / 2} width={size.w} height={size.h} />
       {locked && (
         <g>
           <circle cx={pos.x + 18} cy={pos.y - 22} r={6} fill="var(--success)" stroke="var(--card)" strokeWidth={1.5} />
@@ -76,7 +76,7 @@ export function PlacementScreen(p: Props) {
     e.preventDefault();
     (e.target as Element).setPointerCapture?.(e.pointerId);
     // altura de referência: marcador no mapa (unidades do viewBox → px) ou no banco (84px)
-    const baseH = p.placements[id] ? MARKER_H * (MAP_W / VIEWBOX.w) : 72;
+    const baseH = p.placements[id] ? MARKER_H * (MAP_W / VIEWBOX.w) : 84;
     setDrag({ id, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, moved: false, baseH });
   };
   const move = (e: RPointerEvent) => {
@@ -141,7 +141,7 @@ export function PlacementScreen(p: Props) {
 
       <div className="flex flex-1 gap-5">
         {/* mapa */}
-        <div className="rounded-2xl border-4 border-secondary bg-map-frame p-2 shadow-card self-start">
+        <div className="rounded-2xl border-2 border-secondary/40 bg-map-frame p-2 shadow-card self-start">
           <CityMap
             ref={svgRef}
             width={MAP_W}
@@ -178,7 +178,7 @@ export function PlacementScreen(p: Props) {
 
         {/* painel */}
         <aside className="flex w-[360px] flex-col gap-2.5">
-          <section className="rounded-2xl border-4 border-primary bg-card p-4 shadow-card">
+          <section className="rounded-2xl border-2 border-primary/50 bg-card p-4 shadow-card">
             <div className="mb-2 flex items-center justify-between gap-2">
               <span className="rounded-full bg-primary px-3.5 py-1 font-display text-[15px] font-bold text-primary-foreground">
                 Pista {clue + 1} de {p.clues.length}
@@ -198,27 +198,35 @@ export function PlacementScreen(p: Props) {
           </section>
 
           <section className="flex-1 rounded-2xl border-2 border-secondary/25 bg-card/80 p-3" aria-label="Marcadores para colocar">
-            <p className="mb-2 text-[13px] font-extrabold uppercase tracking-wide text-muted-foreground">
-              {bank.length ? "Arraste para o mapa ou toque e depois toque no lugar:" : "Todos os marcadores estão no mapa."}
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {bank.map((id) => {
-                const m = markerById(id);
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onPointerDown={down(id)}
-                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected((s) => (s === id ? null : id)); svgRef.current?.focus(); } }}
-                    aria-pressed={selected === id}
-                    aria-label={m.label}
-                    className={`touch-none rounded-xl border-2 border-transparent p-1 transition ${selected === id ? "border-secondary bg-secondary/20 ring-4 ring-ring" : "hover:bg-muted"} cursor-grab`}
-                  >
-                    <img src={m.img} alt="" draggable={false} className={`mx-auto h-[72px] w-auto ${drag?.id === id && drag.moved ? "opacity-30" : ""}`} />
-                  </button>
-                );
-              })}
-            </div>
+            {bank.length ? (
+              <>
+                <p className="mb-2 text-[13px] font-extrabold uppercase tracking-wide text-muted-foreground">
+                  Arraste para o mapa ou toque e depois toque no lugar:
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {bank.map((id) => {
+                    const m = markerById(id);
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onPointerDown={down(id)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected((s) => (s === id ? null : id)); svgRef.current?.focus(); } }}
+                        aria-pressed={selected === id}
+                        aria-label={m.label}
+                        className={`touch-none rounded-xl border-2 p-1 transition ${selected === id ? "border-secondary bg-secondary/20 ring-4 ring-ring" : "border-border/60 bg-card hover:border-secondary/50"} cursor-grab`}
+                      >
+                        <img src={m.img} alt="" draggable={false} className={`mx-auto h-[84px] w-auto ${drag?.id === id && drag.moved ? "opacity-30" : ""}`} />
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p className="rounded-xl bg-success/15 px-3 py-2 font-display text-[15px] font-bold text-foreground">
+                Todos os lugares foram posicionados. Agora, confira suas respostas!
+              </p>
+            )}
           </section>
 
           {p.feedback && (

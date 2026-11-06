@@ -54,7 +54,7 @@ export function RouteScreen(p: Props) {
         </h1>
       </header>
       <div className="flex flex-1 gap-5">
-        <div className="self-start rounded-2xl border-4 border-secondary bg-map-frame p-2 shadow-card">
+        <div className="self-start rounded-2xl border-2 border-secondary/40 bg-map-frame p-2 shadow-card">
           <CityMap
             width={748}
             below={
@@ -111,7 +111,7 @@ export function RouteScreen(p: Props) {
         </div>
 
         <aside className="flex w-[360px] flex-col gap-3">
-          <section className="rounded-2xl border-4 border-primary bg-card p-4 shadow-card">
+          <section className="rounded-2xl border-2 border-primary/50 bg-card p-4 shadow-card">
             <p className="font-display text-[19px] leading-snug">{INSTRUCTION}</p>
             {p.note && (
               <p className="mt-2 rounded-xl bg-secondary/10 px-3 py-2 font-display text-[15px] font-bold text-secondary-deep">{p.note}</p>
