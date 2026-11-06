@@ -65,7 +65,7 @@ export function RouteScreen(p: Props) {
                 const isNext = nextId === m && !p.done && !p.readOnly;
                 return (
                   <g key={m}>
-                    {isNext && <circle cx={t.x} cy={t.y} r={26} fill="var(--warning)" opacity={0.6} className="animate-pulse-ring" />}
+                    {isNext && <circle cx={t.x} cy={t.y} r={32} fill="var(--warning)" opacity={0.6} className="animate-pulse-ring" />}
                     <PlacedMarker id={m} pos={t} />
                   </g>
                 );
@@ -78,7 +78,7 @@ export function RouteScreen(p: Props) {
                 return (
                   <g
                     key={n.id}
-                    data-node={n.id}
+                    id={`node-${n.id}`}
                     onClick={() => clickNode(n.id)}
                     className={isAdj ? "cursor-pointer" : ""}
                     role={isAdj ? "button" : undefined}
@@ -143,7 +143,7 @@ export function RouteScreen(p: Props) {
                   <Undo2 /> Desfazer
                 </Button>
                 <Button variant="gameSoft" size="game" className="flex-1" onClick={() => { setHint(null); p.setFeedback(null); p.setRoute([accessNodeOf("nina")]); }} disabled={p.route.length <= 1}>
-                  <RotateCcw /> Recomeçar trajeto
+                  <RotateCcw /> Recomeçar
                 </Button>
               </div>
             )}

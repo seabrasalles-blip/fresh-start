@@ -9,19 +9,19 @@ import { markerById, targetById } from "@/game/locations";
 import { VIEWBOX } from "@/game/mapData";
 
 export type Pos = { x: number; y: number };
-export const MARKER_W = 34;
-export const MARKER_H = 42.5;
+export const MARKER_W = 46;
+export const MARKER_H = 57.5;
 
 export function PlacedMarker({ id, pos, locked, selected, dim }: { id: string; pos: Pos; locked?: boolean; selected?: boolean; dim?: boolean }) {
   const m = markerById(id);
   return (
     <g opacity={dim ? 0.55 : 1}>
-      {selected && <circle cx={pos.x} cy={pos.y} r={25} fill="none" stroke="var(--ring)" strokeWidth={3} strokeDasharray="4 3" />}
+      {selected && <circle cx={pos.x} cy={pos.y} r={32} fill="none" stroke="var(--ring)" strokeWidth={3} strokeDasharray="4 3" />}
       <image href={m.img} x={pos.x - MARKER_W / 2} y={pos.y - MARKER_H / 2} width={MARKER_W} height={MARKER_H} />
       {locked && (
         <g>
-          <circle cx={pos.x + 14} cy={pos.y - 17} r={6} fill="var(--success)" stroke="var(--card)" strokeWidth={1.5} />
-          <path d={`M${pos.x + 11} ${pos.y - 17} l2 2 l4 -4`} stroke="var(--card)" strokeWidth={1.6} fill="none" />
+          <circle cx={pos.x + 18} cy={pos.y - 22} r={6} fill="var(--success)" stroke="var(--card)" strokeWidth={1.5} />
+          <path d={`M${pos.x + 15} ${pos.y - 22} l2 2 l4 -4`} stroke="var(--card)" strokeWidth={1.6} fill="none" />
         </g>
       )}
     </g>
