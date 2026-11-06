@@ -78,6 +78,7 @@ export function RouteScreen(p: Props) {
                 return (
                   <g
                     key={n.id}
+                    data-node={n.id}
                     onClick={() => clickNode(n.id)}
                     className={isAdj ? "cursor-pointer" : ""}
                     role={isAdj ? "button" : undefined}
