@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CityMap } from "@/components/game/CityMap";
 import { TARGETS, TARGET_RADIUS } from "@/game/locations";
-import { GRAPH_NODES, ROUTE_ORDER, START_NODE, accessNodeOf, edgesList, shortestPath } from "@/game/mapGraph";
+import { GRAPH_NODES, ROUTE_ORDER, node, START_NODE, accessNodeOf, edgesList, shortestPath } from "@/game/mapGraph";
 import parte1 from "@/assets/mapa/resposta_parte1.png.asset.json";
 import parte2 from "@/assets/mapa/resposta_parte2.png.asset.json";
 
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/dev/mapa")({
 
 function docRoute() {
   const r = [START_NODE];
-  for (let i = 1; i < ROUTE_ORDER.length; i++) r.push(...shortestPath(accessNodeOf(ROUTE_ORDER[i - 1]), accessNodeOf(ROUTE_ORDER[i]))!.slice(1));
+  for (let i = 1; i < ROUTE_ORDER.length; i++) r.push(...shortestPath(accessNodeOf(ROUTE_ORDER[i - 1]!), accessNodeOf(ROUTE_ORDER[i]!))!.slice(1));
   return r;
 }
 
@@ -45,9 +45,9 @@ function DevMap() {
           <image href={overlay === 1 ? parte1.url : parte2.url} x={0} y={0} width={1202} height={1097} opacity={0.5} />
         )}
         {edgesList().map(([a, b]) => (
-          <line key={a + b} x1={GRAPH_NODES[a].x} y1={GRAPH_NODES[a].y} x2={GRAPH_NODES[b].x} y2={GRAPH_NODES[b].y} stroke="var(--secondary)" strokeWidth={1.5} />
+          <line key={a + b} x1={node(a).x} y1={node(a).y} x2={node(b).x} y2={node(b).y} stroke="var(--secondary)" strokeWidth={1.5} />
         ))}
-        <polyline points={route.map((id) => `${GRAPH_NODES[id].x},${GRAPH_NODES[id].y}`).join(" ")} fill="none" stroke="var(--route)" strokeWidth={3} opacity={0.7} />
+        <polyline points={route.map((id) => `${node(id).x},${node(id).y}`).join(" ")} fill="none" stroke="var(--route)" strokeWidth={3} opacity={0.7} />
         {Object.values(GRAPH_NODES).map((n) => (
           <g key={n.id}>
             <circle cx={n.x} cy={n.y} r={3} fill={n.access ? "var(--route)" : "var(--secondary)"} />

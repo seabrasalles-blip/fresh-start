@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MARKERS, TARGETS, markersOf, targetAt, targetById, validatePlacement } from "./locations";
-import { GRAPH_NODES, ROUTE_ORDER, START_NODE, accessNodeOf, edgesList, isAdjacent, shortestPath } from "./mapGraph";
+import { GRAPH_NODES, ROUTE_ORDER, node, START_NODE, accessNodeOf, edgesList, isAdjacent, shortestPath } from "./mapGraph";
 import { validateRoute } from "./routeValidator";
 
 const houseIds = markersOf("houses").map((m) => m.id);
@@ -11,7 +11,7 @@ const allCorrect = (ids: string[]) => Object.fromEntries(ids.map((id) => [id, MA
 function buildRoute(order: readonly string[]) {
   const r: string[] = [START_NODE];
   for (let i = 1; i < order.length; i++) {
-    const p = shortestPath(accessNodeOf(order[i - 1]), accessNodeOf(order[i]))!;
+    const p = shortestPath(accessNodeOf(order[i - 1]!), accessNodeOf(order[i]!))!;
     r.push(...p.slice(1));
   }
   return r;
@@ -46,7 +46,7 @@ describe("validatePlacement", () => {
   });
   it("marcações faltantes", () => {
     const p: Record<string, string> = allCorrect(houseIds);
-    delete p.caio;
+    delete p["caio"];
     expect(validatePlacement(houseIds, p).missing).toEqual(["caio"]);
   });
   it("vários marcadores numa mesma zona: só o dono acerta", () => {
@@ -73,7 +73,7 @@ describe("grafo", () => {
   });
   it("todas as arestas são horizontais ou verticais (não atravessam quadras)", () => {
     for (const [a, b] of edgesList()) {
-      const A = GRAPH_NODES[a], B = GRAPH_NODES[b];
+      const A = node(a), B = node(b);
       expect(A.x === B.x || A.y === B.y).toBe(true);
     }
   });

@@ -102,6 +102,6 @@ export function shortestPath(from: string, to: string): string[] | null {
   }
   if (!(to in prev)) return null;
   const path: string[] = [];
-  for (let c: string | null = to; c; c = prev[c]) path.unshift(c);
+  for (let c: string | null | undefined = to; c; c = prev[c]) path.unshift(c);
   return path;
 }

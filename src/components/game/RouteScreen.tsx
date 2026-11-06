@@ -6,7 +6,7 @@ import { HelpButton } from "./HelpModal";
 import { PlacedMarker } from "./PlacementScreen";
 import { SpeakButton } from "./SpeakButton";
 import { markerById, targetById } from "@/game/locations";
-import { GRAPH_NODES, ROUTE_ORDER, accessNodeOf, isAdjacent, neighbors } from "@/game/mapGraph";
+import { GRAPH_NODES, ROUTE_ORDER, node, accessNodeOf, isAdjacent, neighbors } from "@/game/mapGraph";
 import { validateRoute } from "@/game/routeValidator";
 
 const INSTRUCTION =
@@ -26,7 +26,7 @@ interface Props {
 
 export function RouteScreen(p: Props) {
   const [hint, setHint] = useState<string | null>(null);
-  const last = p.route[p.route.length - 1];
+  const last = p.route[p.route.length - 1]!;
   const live = validateRoute(p.route);
   const nextId = live.error?.type === "order" ? live.error.expected : live.next;
   const adj = new Set(p.readOnly || p.done ? [] : neighbors(last));
@@ -42,7 +42,7 @@ export function RouteScreen(p: Props) {
     p.setRoute([...p.route, id]);
   };
 
-  const pts = p.route.map((id) => `${GRAPH_NODES[id].x},${GRAPH_NODES[id].y}`).join(" ");
+  const pts = p.route.map((id) => `${node(id).x},${node(id).y}`).join(" ");
 
   return (
     <div className="flex h-full flex-col px-6 pb-5 pt-4">

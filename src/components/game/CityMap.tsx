@@ -49,10 +49,10 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
           ))}
           {/* beco do final da Rua Tulipa */}
           <rect
-            x={COLS[6].a}
+            x={COLS[6]!.a}
             y={TULIPA_STUB.yTop}
-            width={COLS[6].b - COLS[6].a}
-            height={ROWS[2].a - TULIPA_STUB.yTop + 1}
+            width={COLS[6]!.b - COLS[6]!.a}
+            height={ROWS[2]!.a - TULIPA_STUB.yTop + 1}
             fill="var(--map-road)"
           />
         </g>

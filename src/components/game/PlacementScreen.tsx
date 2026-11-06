@@ -97,11 +97,12 @@ export function PlacementScreen(p: Props) {
     if (!selected) return;
     const step = e.shiftKey ? 20 : 6;
     const d: Record<string, Pos> = { ArrowLeft: { x: -step, y: 0 }, ArrowRight: { x: step, y: 0 }, ArrowUp: { x: 0, y: -step }, ArrowDown: { x: 0, y: step } };
-    if (d[e.key]) {
+    const dv = d[e.key];
+    if (dv) {
       e.preventDefault();
       setCursor((c) => ({
-        x: Math.min(VIEWBOX.x + VIEWBOX.w - 5, Math.max(VIEWBOX.x + 5, c.x + d[e.key].x)),
-        y: Math.min(VIEWBOX.y + VIEWBOX.h - 5, Math.max(VIEWBOX.y + 5, c.y + d[e.key].y)),
+        x: Math.min(VIEWBOX.x + VIEWBOX.w - 5, Math.max(VIEWBOX.x + 5, c.x + dv.x)),
+        y: Math.min(VIEWBOX.y + VIEWBOX.h - 5, Math.max(VIEWBOX.y + 5, c.y + dv.y)),
       }));
     } else if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -110,7 +111,7 @@ export function PlacementScreen(p: Props) {
     } else if (e.key === "Escape") setSelected(null);
   };
 
-  const current = p.clues[clue];
+  const current = p.clues[clue]!;
   const speaker = markerById(current.markerId);
 
   return (
@@ -142,7 +143,7 @@ export function PlacementScreen(p: Props) {
             <g id="layer-markers">
               {ids.filter((id) => p.placements[id]).map((id) => (
                 <g key={id} onPointerDown={down(id)} className={isLocked(id) ? "" : "cursor-grab"}>
-                  <PlacedMarker id={id} pos={p.placements[id]} locked={isLocked(id)} selected={selected === id} />
+                  <PlacedMarker id={id} pos={p.placements[id]!} locked={isLocked(id)} selected={selected === id} />
                   <title>{markerById(id).label}</title>
                 </g>
               ))}

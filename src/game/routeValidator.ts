@@ -30,19 +30,20 @@ export function validateRoute(route: string[]): RouteResult {
 
   let reached = 1;
   for (let i = 1; i < route.length; i++) {
-    if (!isAdjacent(route[i - 1], route[i])) {
+    const a = route[i - 1]!, b = route[i]!;
+    if (!isAdjacent(a, b)) {
       return { ok: false, error: { type: "disconnected", at: i }, reached, next: ROUTE_ORDER[reached] ?? null };
     }
-    const acc = GRAPH_NODES[route[i]]?.access;
+    const acc = GRAPH_NODES[b]?.access;
     if (!acc) continue;
     const idx = ROUTE_ORDER.indexOf(acc as (typeof ROUTE_ORDER)[number]);
     if (idx === reached) reached++;
     else if (idx > reached) {
       return {
         ok: false,
-        error: { type: "order", met: acc, expected: ROUTE_ORDER[reached] },
+        error: { type: "order", met: acc, expected: ROUTE_ORDER[reached]! },
         reached,
-        next: ROUTE_ORDER[reached],
+        next: ROUTE_ORDER[reached] ?? null,
       };
     }
   }
@@ -51,7 +52,7 @@ export function validateRoute(route: string[]): RouteResult {
   if (next && next !== "escola") return { ok: false, error: { type: "missingFriend", expected: next }, reached, next };
   if (next === "escola") return { ok: false, error: { type: "notAtSchool" }, reached, next };
   // Tudo cumprido: precisa terminar exatamente na escola.
-  const last = GRAPH_NODES[route[route.length - 1]];
+  const last = GRAPH_NODES[route[route.length - 1]!];
   if (last?.access !== "escola") return { ok: false, error: { type: "notAtSchool" }, reached, next: null };
   return { ok: true, error: null, reached, next: null };
 }
