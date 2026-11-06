@@ -23,7 +23,7 @@ interface Props {
   readOnly?: boolean;
   advanceLabel?: string;
   /** aviso opcional sobre a tentativa em andamento (ex.: primeira rota guardada) */
-  note?: string;
+  note?: string | undefined;
 }
 
 export function RouteScreen(p: Props) {
