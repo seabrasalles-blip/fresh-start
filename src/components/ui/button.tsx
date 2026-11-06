@@ -16,12 +16,17 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        game: "font-display text-lg font-bold uppercase tracking-wide bg-primary text-primary-foreground rounded-2xl shadow-pop hover:brightness-105 active:translate-y-1 active:shadow-none",
+        gameBlue: "font-display text-base font-bold uppercase tracking-wide bg-secondary text-secondary-foreground rounded-2xl shadow-pop-blue hover:brightness-110 active:translate-y-1 active:shadow-none",
+        gameSoft: "font-display text-base font-bold uppercase tracking-wide bg-card text-secondary border-2 border-secondary rounded-2xl hover:bg-muted",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
+        game: "h-12 px-5 [&_svg]:size-5",
+        hero: "h-16 px-10 text-2xl [&_svg]:size-7",
       },
     },
     defaultVariants: {
