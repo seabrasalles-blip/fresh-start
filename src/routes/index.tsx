@@ -10,7 +10,7 @@ import { CITY_CLUES, HOUSE_CLUES } from "@/game/clues";
 import { validatePlacement, targetAt, targetById, markerById, type Phase } from "@/game/locations";
 import { START_NODE } from "@/game/mapGraph";
 import { routeMessage, validateRoute } from "@/game/routeValidator";
-import capa from "@/assets/capa/capa_como_chegar_1200x675.png.asset.json";
+import capa from "@/assets/capa/capa_como_chegar_aprovada.png.asset.json";
 import ninaApresentando from "@/assets/personagens/nina_apresentando.png.asset.json";
 import ninaExplicando from "@/assets/personagens/nina_explicando.png.asset.json";
 import ninaComemorando from "@/assets/personagens/nina_comemorando.png.asset.json";
@@ -99,7 +99,7 @@ function Index() {
     <Stage>
       {screen === "cover" && (
         <div className="relative h-full w-full">
-          <img src={capa.url} alt="Nina e Davi na cidade — Como chegar?" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={capa.url} alt="Como chegar? — Nina e Davi na cidade de Florais" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-x-0 bottom-14 flex justify-center">
             <Button variant="game" size="hero" onClick={() => setScreen("intro")} autoFocus>
               <Play /> Iniciar
