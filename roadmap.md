@@ -1,9 +1,9 @@
 # Refinamento visual e legibilidade
 
 ## Fundo e títulos das telas com mapa
-- [ ] Aplicar fundo claro com decoração discreta nas margens, sem interferir nas interações.
-- [ ] Padronizar os quatro títulos sem alterar mapa, marcadores, painéis ou navegação.
-- [ ] Conferir as quatro telas e o fluxo completo em Chromebook e na janela atual.
+- [x] Aplicar fundo claro com decoração discreta nas margens, sem interferir nas interações.
+- [x] Padronizar os quatro títulos sem alterar mapa, marcadores, painéis ou navegação.
+- [x] Conferir as quatro telas em 1366×768 e 845×607; fluxo completo, 32 testes e construção sem erros.
 
 - [x] Tarefa 1: PNGs otimizados (margens cortadas), banco 84px, proporção por marcador, sem hover-scale
 - [x] Tarefa 2: mapa refinado (verdes suaves alternados, bordas delicadas, rótulos maiores, referências mais legíveis, moldura discreta)
