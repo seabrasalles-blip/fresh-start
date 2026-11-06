@@ -7,7 +7,7 @@ import { DialogScene } from "@/components/game/DialogScene";
 import { PlacementScreen, type Pos } from "@/components/game/PlacementScreen";
 import { RouteScreen } from "@/components/game/RouteScreen";
 import { CITY_CLUES, HOUSE_CLUES } from "@/game/clues";
-import { validatePlacement, targetAt, type Phase } from "@/game/locations";
+import { validatePlacement, targetAt, targetById, markerById, type Phase } from "@/game/locations";
 import { START_NODE } from "@/game/mapGraph";
 import { routeMessage, validateRoute } from "@/game/routeValidator";
 import capa from "@/assets/capa/capa_como_chegar_1200x675.png.asset.json";
@@ -77,8 +77,17 @@ function Index() {
       return;
     }
     setLocked((l) => [...new Set([...l, ...r.correct])]);
+    setPlacements((p) => {
+      const n = { ...p };
+      // alvos por área (parque): fixa o marcador na posição visual padronizada
+      for (const id of r.correct) {
+        const t = targetById(markerById(id).targetId);
+        if (t.rect) n[id] = { x: t.x, y: t.y };
+      }
+      r.wrong.forEach((id) => delete n[id]);
+      return n;
+    });
     if (r.wrong.length) {
-      setPlacements((p) => { const n = { ...p }; r.wrong.forEach((id) => delete n[id]); return n; });
       setPlaceFb({ kind: "warn", text: r.wrong.length === 1 ? "1 marcador precisa de revisão. Ele voltou para o banco. Leia a pista de novo!" : `${r.wrong.length} marcadores precisam de revisão. Eles voltaram para o banco. Leia as pistas de novo!` });
       return;
     }
