@@ -79,11 +79,12 @@ export function buildBlocks() {
   const blocks: { x: number; y: number; w: number; h: number }[] = [];
   for (let j = 0; j < ROWS.length - 1; j++) {
     for (let i = 0; i < COLS.length - 1; i++) {
-      const x0 = COLS[i].b;
-      let x1 = COLS[i + 1].a;
-      if (j === 1 && COLS[i].id === "tulipa") continue;
-      if (j === 1 && COLS[i + 1].id === "tulipa") x1 = COLS[i + 2].a;
-      blocks.push({ x: x0, y: ROWS[j].b, w: x1 - x0, h: ROWS[j + 1].a - ROWS[j].b });
+      const c = COLS[i]!, c1 = COLS[i + 1]!, r = ROWS[j]!, r1 = ROWS[j + 1]!;
+      const x0 = c.b;
+      let x1 = c1.a;
+      if (j === 1 && c.id === "tulipa") continue;
+      if (j === 1 && c1.id === "tulipa") x1 = COLS[i + 2]!.a;
+      blocks.push({ x: x0, y: r.b, w: x1 - x0, h: r1.a - r.b });
     }
   }
   return blocks;

@@ -10,8 +10,8 @@ export interface GNode {
   y: number;
   kind: "cross" | "access" | "end";
   /** marcador servido por este acesso */
-  access?: string;
-  label?: string;
+  access?: string | undefined;
+  label?: string | undefined;
 }
 
 const NAMED_COLS = COLS.slice(1, 8); // violeta..gardenia
@@ -27,8 +27,8 @@ function add(n: GNode) {
   adj[n.id] ??= new Set();
 }
 function link(a: string, b: string) {
-  adj[a].add(b);
-  adj[b].add(a);
+  adj[a]!.add(b);
+  adj[b]!.add(a);
 }
 
 for (const c of NAMED_COLS) {
@@ -66,17 +66,18 @@ for (const c of NAMED_COLS) {
     .filter((n) => Math.abs(n.x - mid(c)) < 0.01)
     .sort((a, b) => a.y - b.y)
     .map((n) => n.id);
-  for (let i = 0; i < ids.length - 1; i++) link(ids[i], ids[i + 1]);
+  for (let i = 0; i < ids.length - 1; i++) link(ids[i]!, ids[i + 1]!);
 }
 for (const r of NAMED_ROWS) {
   const ids = Object.values(nodes)
     .filter((n) => Math.abs(n.y - mid(r)) < 0.01)
     .sort((a, b) => a.x - b.x)
     .map((n) => n.id);
-  for (let i = 0; i < ids.length - 1; i++) link(ids[i], ids[i + 1]);
+  for (let i = 0; i < ids.length - 1; i++) link(ids[i]!, ids[i + 1]!);
 }
 
 export const GRAPH_NODES = nodes;
+export const node = (id: string): GNode => nodes[id]!;
 export const neighbors = (id: string): string[] => [...(adj[id] ?? [])];
 export const isAdjacent = (a: string, b: string) => adj[a]?.has(b) ?? false;
 export const accessNodeOf = (markerId: string) => `acc_${markerId}`;
