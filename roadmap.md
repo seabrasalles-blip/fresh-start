@@ -1,11 +1,12 @@
-# Como chegar? — correções e melhorias da versão atual
+# Roadmap — Correções e melhorias da versão
 
-- [x] Enviar a ilustração do parque para a biblioteca de mídia do app
-- [ ] Fundos narrativos: usar "Parque colorido do bairro" em todas as telas de fala (Nina e Davi, inclusive encerramento), sem tocar nas telas de mapa
-- [ ] Segunda etapa: casas visíveis por padrão, botão começando como "OCULTAR CASAS"
-- [ ] Parque: separar coordenada de validação e de exibição; após o acerto, mostrar o parque em ponto livre da quadra sem encobrir a casa do Davi
-- [ ] Acabamento das telas de mapa: quadras, nomes de ruas (sobretudo os verticais), painéis e botão ocultar casas
-- [ ] Trajeto: desafio opcional de caminho mais curto (Dijkstra com peso geométrico, comparação de duas tentativas, nunca reprovar caminho válido)
-- [ ] Testes: novos casos + rodar a suíte
-- [ ] Conferir no navegador: arraste, casas visíveis, parque, desafio, sem barras de rolagem
-- [ ] Publicar o jogo
+- [x] Enviar a ilustração do parque para a biblioteca de imagens
+- [x] Fundo ilustrado nas falas (parque aprovado), sem mexer no mapa
+- [x] Marcador maior ao arrastar (~135%), sem mudar toque/seleção
+- [x] Parque: área certa (quadra), posição de exibição padronizada sem cobrir a casa do Davi
+- [x] Casas dos amigos visíveis na 2ª etapa, com "Ocultar casas" funcionando
+- [x] Nomes de rua maiores com contorno claro; quadras mais suaves; nada cortado e sem barras de rolagem
+- [x] Menor caminho por comprimento (Dijkstra) + desafio "dá para encurtar?" (5%) + comparar tentativas
+- [x] Testes: comprimento, ordem, 5%, comparação, área do parque, posição de exibição
+- [x] Conferir no navegador: arrastar, toque, desafio, ocultar/mostrar, parque na quadra
+- [ ] Publicar de novo (o Lovable pediu aprovação e ela foi negada na última vez)
