@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { CityMap, clientToMap } from "./CityMap";
 import { HelpButton } from "./HelpModal";
 import { SpeakButton } from "./SpeakButton";
-import { markerById, targetById } from "@/game/locations";
+import { MARKER_BOX, markerById, targetById } from "@/game/locations";
 import { VIEWBOX } from "@/game/mapData";
 
 export type Pos = { x: number; y: number };
-export const MARKER_W = 46;
-export const MARKER_H = 57.5;
+const MARKER_W = MARKER_BOX.w;
+const MARKER_H = MARKER_BOX.h;
 
 export function PlacedMarker({ id, pos, locked, selected, dim }: { id: string; pos: Pos; locked?: boolean; selected?: boolean; dim?: boolean }) {
   const m = markerById(id);
@@ -45,7 +45,8 @@ interface Props {
 
 type Drag = { id: string; sx: number; sy: number; x: number; y: number; moved: boolean; baseH: number };
 
-const MAP_W = 760;
+/** Largura do mapa: 748 + moldura + painel de 360 + folgas = exatamente 1200 de palco. */
+const MAP_W = 748;
 /** Fator de ampliação do marcador somente durante o arraste. */
 const DRAG_SCALE = 1.35;
 
@@ -55,8 +56,8 @@ export function PlacementScreen(p: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [cursor, setCursor] = useState<Pos>({ x: VIEWBOX.x + VIEWBOX.w / 2, y: VIEWBOX.y + VIEWBOX.h / 2 });
-  // na 2ª etapa as casas começam ocultas para não atrapalhar o parque
-  const [showBg, setShowBg] = useState(() => !p.background?.length);
+  // na 2ª etapa as casas continuam visíveis por padrão; o botão pode ocultá-las
+  const [showBg, setShowBg] = useState(true);
 
   const ids = p.clues.map((c) => c.markerId);
   const bank = ids.filter((id) => !p.placements[id]);
@@ -126,7 +127,13 @@ export function PlacementScreen(p: Props) {
       <header className="mb-3 flex items-center justify-between">
         <h1 className="font-display text-3xl font-extrabold text-secondary-deep">{p.title}</h1>
         {p.background && p.background.length > 0 && (
-          <Button variant="gameSoft" size="sm" className="h-10 px-4" onClick={() => setShowBg((v) => !v)} aria-pressed={!showBg}>
+          <Button
+            variant="gameSoft"
+            size="game"
+            className="px-5"
+            onClick={() => setShowBg((v) => !v)}
+            aria-pressed={!showBg}
+          >
             {showBg ? <EyeOff /> : <Eye />} {showBg ? "Ocultar casas" : "Mostrar casas"}
           </Button>
         )}
@@ -182,13 +189,13 @@ export function PlacementScreen(p: Props) {
         {/* painel */}
         <aside className="flex w-[360px] flex-col gap-3">
           <section className="rounded-2xl border-4 border-primary bg-card p-4 shadow-card">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="rounded-full bg-primary px-3 py-0.5 font-display text-base font-bold text-primary-foreground">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="rounded-full bg-primary px-3.5 py-1 font-display text-[15px] font-bold text-primary-foreground">
                 Pista {clue + 1} de {p.clues.length}
               </span>
-              <span className="font-display text-base font-bold text-muted-foreground">{speaker.label}</span>
+              <span className="font-display text-[15px] font-bold text-muted-foreground">{speaker.label}</span>
             </div>
-            <p className="min-h-[84px] font-display text-[19px] leading-snug" aria-live="polite">{current.text}</p>
+            <p className="min-h-[92px] font-display text-[19px] leading-relaxed" aria-live="polite">{current.text}</p>
             <div className="mt-2 flex items-center justify-between gap-2">
               <Button variant="gameSoft" size="sm" className="h-10 px-3" onClick={() => setClue((c) => c - 1)} disabled={clue === 0}>
                 <ChevronLeft /> Pista anterior
@@ -200,8 +207,8 @@ export function PlacementScreen(p: Props) {
             <div className="mt-2"><SpeakButton text={current.text} /></div>
           </section>
 
-          <section className="flex-1 rounded-2xl bg-card/70 p-3" aria-label="Marcadores para colocar">
-            <p className="mb-2 text-sm font-bold text-muted-foreground">
+          <section className="flex-1 rounded-2xl border-2 border-secondary/25 bg-card/80 p-3" aria-label="Marcadores para colocar">
+            <p className="mb-2 text-[13px] font-extrabold uppercase tracking-wide text-muted-foreground">
               {bank.length ? "Arraste para o mapa ou toque e depois toque no lugar:" : "Todos os marcadores estão no mapa."}
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -215,7 +222,7 @@ export function PlacementScreen(p: Props) {
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected((s) => (s === id ? null : id)); svgRef.current?.focus(); } }}
                     aria-pressed={selected === id}
                     aria-label={m.label}
-                    className={`touch-none rounded-xl p-1 transition ${selected === id ? "bg-secondary/20 ring-4 ring-ring" : "hover:bg-muted"} cursor-grab`}
+                    className={`touch-none rounded-xl border-2 border-transparent p-1 transition ${selected === id ? "border-secondary bg-secondary/20 ring-4 ring-ring" : "hover:bg-muted"} cursor-grab`}
                   >
                     <img src={m.img} alt="" draggable={false} className={`mx-auto h-[84px] w-auto ${drag?.id === id && drag.moved ? "opacity-30" : ""}`} />
                   </button>

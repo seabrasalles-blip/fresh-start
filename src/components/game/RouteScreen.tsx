@@ -22,6 +22,8 @@ interface Props {
   onAdvance: () => void;
   readOnly?: boolean;
   advanceLabel?: string;
+  /** aviso opcional sobre a tentativa em andamento (ex.: primeira rota guardada) */
+  note?: string;
 }
 
 export function RouteScreen(p: Props) {
@@ -107,6 +109,9 @@ export function RouteScreen(p: Props) {
         <aside className="flex w-[360px] flex-col gap-3">
           <section className="rounded-2xl border-4 border-primary bg-card p-4 shadow-card">
             <p className="font-display text-[19px] leading-snug">{INSTRUCTION}</p>
+            {p.note && (
+              <p className="mt-2 rounded-xl bg-secondary/10 px-3 py-2 font-display text-[15px] font-bold text-secondary-deep">{p.note}</p>
+            )}
             <div className="mt-2"><SpeakButton text={INSTRUCTION} /></div>
           </section>
 
