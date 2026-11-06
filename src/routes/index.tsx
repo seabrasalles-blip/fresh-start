@@ -7,7 +7,7 @@ import { DialogScene } from "@/components/game/DialogScene";
 import { PlacementScreen, type Pos } from "@/components/game/PlacementScreen";
 import { RouteScreen } from "@/components/game/RouteScreen";
 import { CITY_CLUES, HOUSE_CLUES } from "@/game/clues";
-import { validatePlacement, targetAt, targetById, markerById, type Phase } from "@/game/locations";
+import { validatePlacement, targetAt, targetById, markerById, displayOf, type Phase } from "@/game/locations";
 import { START_NODE } from "@/game/mapGraph";
 import { routeMessage, validateRoute } from "@/game/routeValidator";
 import { canGoMuchShorter, compareRoutes, minimumRouteLength, routeLength } from "@/game/routeLength";
@@ -86,10 +86,10 @@ function Index() {
     setLocked((l) => [...new Set([...l, ...r.correct])]);
     setPlacements((p) => {
       const n = { ...p };
-      // alvos por área (parque): fixa o marcador na posição visual padronizada
+      // alvos por área (parque): fixa o marcador na posição de exibição da quadra
       for (const id of r.correct) {
         const t = targetById(markerById(id).targetId);
-        if (t.rect) n[id] = { x: t.x, y: t.y };
+        if (t.rect) n[id] = displayOf(t);
       }
       r.wrong.forEach((id) => delete n[id]);
       return n;
