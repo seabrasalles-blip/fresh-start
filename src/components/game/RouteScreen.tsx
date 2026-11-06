@@ -8,6 +8,7 @@ import { SpeakButton } from "./SpeakButton";
 import { markerById, targetById } from "@/game/locations";
 import { GRAPH_NODES, ROUTE_ORDER, node, accessNodeOf, isAdjacent, neighbors } from "@/game/mapGraph";
 import { validateRoute } from "@/game/routeValidator";
+import { MapScreenBackdrop, MapScreenHeader } from "./MapScreenChrome";
 
 const INSTRUCTION =
   "Comece na casa da Nina. Siga pelas ruas até a casa da Bia. Depois, encontre os outros amigos na ordem indicada. Termine na escola!";
@@ -47,13 +48,10 @@ export function RouteScreen(p: Props) {
   const pts = p.route.map((id) => `${node(id).x},${node(id).y}`).join(" ");
 
   return (
-    <div className="flex h-full flex-col px-6 pb-5 pt-4">
-      <header className="mb-3 flex items-center justify-between">
-        <h1 className="font-display text-3xl font-extrabold text-secondary-deep">
-          {p.readOnly ? "Nosso caminho até a escola" : "Construa nosso trajeto"}
-        </h1>
-      </header>
-      <div className="flex flex-1 gap-5">
+    <div className="relative isolate flex h-full flex-col px-6 pb-5 pt-4">
+      <MapScreenBackdrop />
+      <MapScreenHeader title={p.readOnly ? "Nosso caminho até a escola" : "Construa nosso trajeto"} mission={p.readOnly ? "Nosso caminho · Revisão" : "Missão 02 · O trajeto"} />
+      <div className="relative flex flex-1 gap-5">
         <div className="self-start rounded-2xl border-2 border-secondary/40 bg-map-frame p-2 shadow-card">
           <CityMap
             width={748}

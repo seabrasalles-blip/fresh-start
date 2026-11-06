@@ -7,6 +7,7 @@ import { HelpButton } from "./HelpModal";
 import { SpeakButton } from "./SpeakButton";
 import { MARKER_BOX, markerById, markerSize, targetById } from "@/game/locations";
 import { VIEWBOX } from "@/game/mapData";
+import { MapScreenBackdrop, MapScreenHeader } from "./MapScreenChrome";
 
 export type Pos = { x: number; y: number };
 const MARKER_H = MARKER_BOX.h;
@@ -123,9 +124,9 @@ export function PlacementScreen(p: Props) {
   const speaker = markerById(current.markerId);
 
   return (
-    <div className="flex h-full flex-col px-6 pb-5 pt-4" onPointerMove={move} onPointerUp={up}>
-      <header className="mb-3 flex items-center justify-between">
-        <h1 className="font-display text-3xl font-extrabold text-secondary-deep">{p.title}</h1>
+    <div className="relative isolate flex h-full flex-col px-6 pb-5 pt-4" onPointerMove={move} onPointerUp={up}>
+      <MapScreenBackdrop />
+      <MapScreenHeader title={p.title} mission={p.background ? "Missão 03 · A cidade" : "Missão 01 · As casas"}>
         {p.background && p.background.length > 0 && (
           <Button
             variant="gameSoft"
@@ -137,9 +138,9 @@ export function PlacementScreen(p: Props) {
             {showBg ? <EyeOff /> : <Eye />} {showBg ? "Ocultar casas" : "Mostrar casas"}
           </Button>
         )}
-      </header>
+      </MapScreenHeader>
 
-      <div className="flex flex-1 gap-5">
+      <div className="relative flex flex-1 gap-5">
         {/* mapa */}
         <div className="rounded-2xl border-2 border-secondary/40 bg-map-frame p-2 shadow-card self-start">
           <CityMap
