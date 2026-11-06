@@ -39,6 +39,8 @@ export interface Marker {
   img: string;
   targetId: string;
   phase: Phase;
+  /** proporção largura/altura da ilustração (sem as margens transparentes) */
+  aspect: number;
 }
 
 /**
@@ -64,24 +66,27 @@ export const TARGETS: Target[] = [
 ];
 
 export const MARKERS: Marker[] = [
-  { id: "nina", label: "Casa da Nina", img: casaNina.url, targetId: "t-nina", phase: "houses" },
-  { id: "bia", label: "Casa da Bia", img: casaBia.url, targetId: "t-bia", phase: "houses" },
-  { id: "helena", label: "Casa da Helena", img: casaHelena.url, targetId: "t-helena", phase: "houses" },
-  { id: "davi", label: "Casa do Davi", img: casaDavi.url, targetId: "t-davi", phase: "houses" },
-  { id: "caio", label: "Casa do Caio", img: casaCaio.url, targetId: "t-caio", phase: "houses" },
-  { id: "escola", label: "Escola", img: escola.url, targetId: "t-escola", phase: "houses" },
-  { id: "igreja", label: "Igreja", img: igreja.url, targetId: "t-igreja", phase: "city" },
-  { id: "parque", label: "Parque", img: parque.url, targetId: "t-parque", phase: "city" },
-  { id: "mercado", label: "Mercado", img: mercado.url, targetId: "t-mercado", phase: "city" },
-  { id: "shopping", label: "Shopping", img: shopping.url, targetId: "t-shopping", phase: "city" },
-  { id: "sorveteria", label: "Sorveteria", img: sorveteria.url, targetId: "t-sorveteria", phase: "city" },
+  { id: "nina", label: "Casa da Nina", img: casaNina.url, targetId: "t-nina", phase: "houses", aspect: 265 / 395 },
+  { id: "bia", label: "Casa da Bia", img: casaBia.url, targetId: "t-bia", phase: "houses", aspect: 267 / 351 },
+  { id: "helena", label: "Casa da Helena", img: casaHelena.url, targetId: "t-helena", phase: "houses", aspect: 253 / 363 },
+  { id: "davi", label: "Casa do Davi", img: casaDavi.url, targetId: "t-davi", phase: "houses", aspect: 250 / 351 },
+  { id: "caio", label: "Casa do Caio", img: casaCaio.url, targetId: "t-caio", phase: "houses", aspect: 268 / 361 },
+  { id: "escola", label: "Escola", img: escola.url, targetId: "t-escola", phase: "houses", aspect: 317 / 379 },
+  { id: "igreja", label: "Igreja", img: igreja.url, targetId: "t-igreja", phase: "city", aspect: 305 / 420 },
+  { id: "parque", label: "Parque", img: parque.url, targetId: "t-parque", phase: "city", aspect: 324 / 405 },
+  { id: "mercado", label: "Mercado", img: mercado.url, targetId: "t-mercado", phase: "city", aspect: 325 / 389 },
+  { id: "shopping", label: "Shopping", img: shopping.url, targetId: "t-shopping", phase: "city", aspect: 323 / 387 },
+  { id: "sorveteria", label: "Sorveteria", img: sorveteria.url, targetId: "t-sorveteria", phase: "city", aspect: 341 / 408 },
 ];
 
 /** Raio (unidades do viewBox) para considerar que um marcador caiu num alvo. */
 export const TARGET_RADIUS = 26;
 
-/** Caixa do marcador no mapa (unidades do viewBox) — usada para evitar sobreposição. */
+/** Caixa do marcador no mapa (unidades do viewBox) — altura fixa; a largura respeita a proporção de cada ilustração. */
 export const MARKER_BOX = { w: 46, h: 57.5 };
+
+/** Tamanho de desenho do marcador no mapa: altura fixa, largura pela proporção da imagem. */
+export const markerSize = (id: string) => ({ w: MARKER_BOX.h * markerById(id).aspect, h: MARKER_BOX.h });
 
 /** Onde o marcador é desenhado: pode diferir do ponto usado na validação. */
 export const displayOf = (t: Target) => t.display ?? { x: t.x, y: t.y };
