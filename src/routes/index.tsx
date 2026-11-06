@@ -99,7 +99,7 @@ function Index() {
     <Stage>
       {screen === "cover" && (
         <div className="relative h-full w-full">
-          <img src={capa.url} alt="Nina e Davi na cidade — Como chegar?" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={capa.url} alt="Como chegar? — Nina e Davi na cidade de Florais" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-x-0 bottom-14 flex justify-center">
             <Button variant="game" size="hero" onClick={() => setScreen("intro")} autoFocus>
               <Play /> Iniciar
