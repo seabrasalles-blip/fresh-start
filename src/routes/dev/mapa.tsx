@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CityMap } from "@/components/game/CityMap";
 import { TARGETS, TARGET_RADIUS } from "@/game/locations";
 import { GRAPH_NODES, ROUTE_ORDER, node, START_NODE, accessNodeOf, edgesList, shortestPath } from "@/game/mapGraph";
@@ -8,6 +8,10 @@ import parte2 from "@/assets/mapa/resposta_parte2.png.asset.json";
 
 /** Visualização técnica (não linkada para o aluno): grafo, alvos e sobreposição com o gabarito original. */
 export const Route = createFileRoute("/dev/mapa")({
+  // gabaritos só no ambiente de desenvolvimento; na versão publicada a página não existe
+  beforeLoad: () => {
+    if (!import.meta.env.DEV) throw notFound();
+  },
   head: () => ({
     meta: [
       { title: "Conferência técnica do mapa — Como chegar?" },
@@ -29,6 +33,10 @@ function docRoute() {
 }
 
 function DevMap() {
+  return import.meta.env.DEV ? <DevMapInner /> : null;
+}
+
+function DevMapInner() {
   const [overlay, setOverlay] = useState<0 | 1 | 2>(1);
   const route = docRoute();
   return (
