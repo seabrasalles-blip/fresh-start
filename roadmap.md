@@ -1,12 +1,7 @@
-# Roadmap — Correções e melhorias da versão
+# Refinamento visual e legibilidade
 
-- [x] Enviar a ilustração do parque para a biblioteca de imagens
-- [x] Fundo ilustrado nas falas (parque aprovado), sem mexer no mapa
-- [x] Marcador maior ao arrastar (~135%), sem mudar toque/seleção
-- [x] Parque: área certa (quadra), posição de exibição padronizada sem cobrir a casa do Davi
-- [x] Casas dos amigos visíveis na 2ª etapa, com "Ocultar casas" funcionando
-- [x] Nomes de rua maiores com contorno claro; quadras mais suaves; nada cortado e sem barras de rolagem
-- [x] Menor caminho por comprimento (Dijkstra) + desafio "dá para encurtar?" (5%) + comparar tentativas
-- [x] Testes: comprimento, ordem, 5%, comparação, área do parque, posição de exibição
-- [x] Conferir no navegador: arrastar, toque, desafio, ocultar/mostrar, parque na quadra
-- [ ] Publicar de novo (o Lovable pediu aprovação e ela foi negada na última vez)
+- [ ] Tarefa 1: otimizar PNGs dos marcadores (cortar margens transparentes), banco 84px, sem hover-scale, destaque no selecionado sem mover coordenada
+- [ ] Tarefa 2: refinar visual do mapa (quadras verdes suaves com variação, bordas delicadas, rótulos legíveis, referências, moldura discreta) — sem mudar geometria
+- [ ] Tarefa 3: refinar painel direito (bordas leves, hierarquia, mensagem compacta quando todos posicionados)
+- [ ] Tarefa 4: verificar encaixe no palco 1200×675 (6 marcadores, erro, todos posicionados) e tela de Chromebook
+- [ ] Tarefa 5: rodar testes existentes + verificação manual no navegador
