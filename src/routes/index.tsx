@@ -106,17 +106,26 @@ function Index() {
   const firstLen = attempts.length ? routeLength(attempts[0]!) : 0;
   const secondLen = attempts.length > 1 ? routeLength(attempts[1]!) : null;
   const cmp = secondLen === null ? null : compareRoutes(firstLen, secondLen);
-  const alreadyMinimal = attempts.length === 1 && !canGoMuchShorter(firstLen, MIN_LEN);
+  const isExactMin = (len: number) => Math.abs(len - MIN_LEN) < 0.5;
+  const lastLen = secondLen ?? firstLen;
+  const lastIsMin = attempts.length > 0 && isExactMin(lastLen);
+  const minNote = lastIsMin
+    ? " E esse é o caminho mais curto possível!"
+    : " Ainda existe um caminho um pouco mais curto, se quiser procurar.";
   const routeOkText =
     cmp === "shorter"
-      ? "Muito bem! O seu segundo caminho é mais curto que o primeiro: você descobriu um jeito melhor de passar pelas casas na mesma ordem!"
+      ? "Muito bem! O seu segundo caminho é mais curto que o primeiro: você descobriu um jeito melhor de passar pelas casas na mesma ordem!" + minNote
       : cmp === "longer"
-        ? "Os dois caminhos passaram pelas casas na ordem certa! Desta vez o primeiro foi o mais curto — e você pode tentar de novo quando quiser."
+        ? "Os dois caminhos passaram pelas casas na ordem certa! Desta vez o primeiro foi o mais curto. Se quiser, pode tentar de novo."
         : cmp === "same"
-          ? "Os dois caminhos têm exatamente o mesmo tamanho! Os dois estão certos."
-          : alreadyMinimal
-            ? "Você já encontrou um dos caminhos mais curtos, passando pelas casas na ordem certa. Parabéns!"
-            : routeMessage({ ok: true, error: null, reached: 6, next: null });
+          ? (Math.abs(firstLen - (secondLen ?? 0)) < 0.5
+              ? "Os dois caminhos têm o mesmo tamanho! Os dois estão certos."
+              : "Os dois caminhos têm quase o mesmo tamanho! Os dois estão certos.") + minNote
+          : lastIsMin
+            ? "Você encontrou o caminho mais curto, passando pelas casas na ordem certa. Parabéns!"
+            : "Você passou pelas casas na ordem certa e chegou à escola! Seu caminho está bem perto do mais curto. Se quiser, pode tentar encurtar mais um pouquinho.";
+  const canRetry = attempts.length > 0 && !lastIsMin;
+  const retryRoute = () => { setRoute([START_NODE]); setRouteFb(null); setScreen("route"); };
 
   return (
     <Stage>
@@ -183,7 +192,7 @@ function Index() {
               setAttempts([route]);
               setScreen(canGoMuchShorter(routeLength(route), MIN_LEN) ? "routeChallenge" : "routeFeedback");
             } else {
-              setAttempts((a) => [...a, route]);
+              setAttempts((a) => [a[0]!, route]);
               setScreen("routeFeedback");
             }
           }}
@@ -196,7 +205,16 @@ function Index() {
           characterAlt="Nina comemorando"
           name="Nina"
           text={routeOkText}
-          actions={<Button variant="game" size="game" onClick={() => setScreen("cityIntro")}>Continuar <ArrowRight /></Button>}
+          actions={
+            <>
+              {canRetry && (
+                <Button variant="gameBlue" size="game" onClick={retryRoute}>
+                  <RotateCcw /> Tentar de novo
+                </Button>
+              )}
+              <Button variant="game" size="game" onClick={() => setScreen("cityIntro")}>Continuar <ArrowRight /></Button>
+            </>
+          }
         />
       )}
 
@@ -208,7 +226,7 @@ function Index() {
           text="Muito bem! Você encontrou um caminho até a escola! Mas será que existe um caminho mais curto, passando pelas casas na mesma ordem?"
           actions={
             <>
-              <Button variant="game" size="game" onClick={() => { setRoute([START_NODE]); setRouteFb(null); setScreen("route"); }}>
+              <Button variant="game" size="game" onClick={retryRoute}>
                 <RotateCcw /> Tentar outro caminho
               </Button>
               <Button variant="gameBlue" size="game" onClick={() => setScreen("cityIntro")}>
