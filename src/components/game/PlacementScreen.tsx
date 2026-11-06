@@ -154,19 +154,9 @@ export function PlacementScreen(p: Props) {
             <g id="layer-background-markers" pointerEvents="none">
               {showBg &&
                 p.background?.map((id) => {
+                  // casas da 1ª etapa ficam sempre na posição original do gabarito
                   const t = targetById(markerById(id).targetId);
-                  // se um marcador da etapa atual cobre a casa, desloca a casa e liga uma linha ao alvo real
-                  const clash = ids.some((fid) => {
-                    const pl = p.placements[fid];
-                    return pl && Math.hypot(pl.x - t.x, pl.y - t.y) < 40;
-                  });
-                  const pos = clash ? { x: t.x + 34, y: t.y + 30 } : t;
-                  return (
-                    <g key={id}>
-                      {clash && <line x1={pos.x} y1={pos.y} x2={t.x} y2={t.y} stroke="var(--muted-foreground)" strokeWidth={1.5} strokeDasharray="3 3" />}
-                      <PlacedMarker id={id} pos={pos} locked dim />
-                    </g>
-                  );
+                  return <PlacedMarker key={id} id={id} pos={{ x: t.x, y: t.y }} locked dim />;
                 })}
             </g>
             <g id="layer-markers">
