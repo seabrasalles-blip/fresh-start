@@ -33,7 +33,10 @@ function docRoute() {
 }
 
 function DevMap() {
-  if (!import.meta.env.DEV) return null;
+  return import.meta.env.DEV ? <DevMapInner /> : null;
+}
+
+function DevMapInner() {
   const [overlay, setOverlay] = useState<0 | 1 | 2>(1);
   const route = docRoute();
   return (
