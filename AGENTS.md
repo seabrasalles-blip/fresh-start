@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Como chegar? (atividade)
+- Map geography lives only in `src/game/mapData.ts`/`locations.ts`/`mapGraph.ts`, in the pixel coordinates of the original answer images (resposta_parte*.png); never move streets/targets without re-checking `/dev/mapa` overlay — the original Flash map is the authority.
+- Placement and route rules are pure functions (`validatePlacement`, `validateRoute`) covered by `src/game/game.test.ts`; UI only calls them.
+- The activity renders inside a fixed 1200×675 `Stage` scaled to the window, so layouts use fixed pixel sizes and never scroll.
