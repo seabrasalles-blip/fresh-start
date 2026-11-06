@@ -33,6 +33,29 @@ describe("alvos", () => {
   });
 });
 
+describe("parque (validação por quadra)", () => {
+  it("aceita várias posições dentro da quadra correta", () => {
+    for (const [x, y] of [[400, 295], [427.5, 311], [455, 330], [392, 288], [463, 335]] as const) {
+      expect(targetAt(x, y, "city")).toBe("t-parque");
+    }
+  });
+  it("rejeita ruas e quadras vizinhas", () => {
+    expect(targetAt(474.5, 311, "city")).not.toBe("t-parque"); // Av. Cravo
+    expect(targetAt(427, 277, "city")).not.toBe("t-parque"); // Rua Girassol
+    expect(targetAt(427, 348, "city")).not.toBe("t-parque"); // Rua Margarida
+    expect(targetAt(380, 311, "city")).not.toBe("t-parque"); // Rua Rosa
+    expect(targetAt(500, 311, "city")).not.toBe("t-parque"); // quadra a leste do Cravo
+    expect(targetAt(427, 250, "city")).not.toBe("t-parque"); // quadra ao norte do Girassol
+    expect(targetAt(340, 311, "city")).not.toBe("t-parque"); // quadra a oeste da Rosa
+  });
+  it("o alvo do parque é o centro da quadra delimitada pelas vias", () => {
+    const t = targetById("t-parque");
+    expect(t.rect).toEqual({ x0: 390, x1: 465, y0: 285, y1: 337 });
+    expect(t.x).toBe(427.5);
+    expect(t.y).toBe(311);
+  });
+});
+
 describe("validatePlacement", () => {
   it("todas corretas", () => {
     expect(validatePlacement(houseIds, allCorrect(houseIds)).correct).toHaveLength(6);

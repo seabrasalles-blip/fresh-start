@@ -9,6 +9,7 @@ import parque from "@/assets/marcadores/parque.png.asset.json";
 import mercado from "@/assets/marcadores/mercado.png.asset.json";
 import shopping from "@/assets/marcadores/shopping.png.asset.json";
 import sorveteria from "@/assets/marcadores/sorveteria.png.asset.json";
+import { COLS, ROWS } from "./mapData";
 
 export type Phase = "houses" | "city";
 
@@ -18,7 +19,17 @@ export interface Target {
   /** centro do alvo (gabarito original) */
   x: number;
   y: number;
+  /** quando presente, a validação é por área (quadra) e não por raio */
+  rect?: { x0: number; y0: number; x1: number; y1: number };
 }
+
+/** Quadra do parque: leste da Rua Rosa, oeste da Av. Cravo, sul da Rua Girassol, norte da Rua Margarida. */
+export const PARQUE_RECT = {
+  x0: COLS.find((r) => r.id === "rosa")!.b,
+  x1: COLS.find((r) => r.id === "cravo")!.a,
+  y0: ROWS.find((r) => r.id === "girassol")!.b,
+  y1: ROWS.find((r) => r.id === "margarida")!.a,
+};
 
 export interface Marker {
   id: string;
@@ -37,7 +48,7 @@ export const TARGETS: Target[] = [
   { id: "t-caio", phase: "houses", x: 536, y: 452 },
   { id: "t-escola", phase: "houses", x: 334, y: 391 },
   { id: "t-igreja", phase: "city", x: 603, y: 394 },
-  { id: "t-parque", phase: "city", x: 440, y: 310 },
+  { id: "t-parque", phase: "city", x: (PARQUE_RECT.x0 + PARQUE_RECT.x1) / 2, y: (PARQUE_RECT.y0 + PARQUE_RECT.y1) / 2, rect: PARQUE_RECT },
   { id: "t-mercado", phase: "city", x: 610, y: 307 },
   { id: "t-shopping", phase: "city", x: 342, y: 185 },
   { id: "t-sorveteria", phase: "city", x: 516, y: 172 },
@@ -70,6 +81,10 @@ export function targetAt(x: number, y: number, phase: Phase): string | null {
   let bestD = TARGET_RADIUS;
   for (const t of TARGETS) {
     if (t.phase !== phase) continue;
+    if (t.rect) {
+      if (x >= t.rect.x0 && x <= t.rect.x1 && y >= t.rect.y0 && y <= t.rect.y1) return t.id;
+      continue;
+    }
     const d = Math.hypot(t.x - x, t.y - y);
     if (d <= bestD) {
       bestD = d;
