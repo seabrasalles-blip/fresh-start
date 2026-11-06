@@ -96,6 +96,11 @@ export function PlacementScreen(p: Props) {
     setDrag(null);
   };
 
+  /** Arraste interrompido (sistema, troca de janela, perda de captura): só encerra, sem mover nada. */
+  const cancel = () => {
+    if (drag) setDrag(null);
+  };
+
   const mapClick = (e: React.MouseEvent) => {
     if (!selected || drag) return;
     placeAt(selected, e.clientX, e.clientY);
@@ -124,7 +129,7 @@ export function PlacementScreen(p: Props) {
   const speaker = markerById(current.markerId);
 
   return (
-    <div className="relative isolate flex h-full flex-col px-6 pb-5 pt-4" onPointerMove={move} onPointerUp={up}>
+    <div className="relative isolate flex h-full flex-col px-6 pb-5 pt-4" onPointerMove={move} onPointerUp={up} onPointerCancel={cancel} onLostPointerCapture={cancel}>
       <MapScreenBackdrop />
       <MapScreenHeader title={p.title} mission={p.background ? "Missão 03 · A cidade" : "Missão 01 · As casas"}>
         {p.background && p.background.length > 0 && (
