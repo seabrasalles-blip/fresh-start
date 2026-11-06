@@ -61,6 +61,10 @@ const NAMES: Record<string, string> = {
   nina: "a Nina", bia: "a Bia", helena: "a Helena", davi: "o Davi", caio: "o Caio", escola: "a escola",
 };
 
+const DE: Record<string, string> = {
+  nina: "da Nina", bia: "da Bia", helena: "da Helena", davi: "do Davi", caio: "do Caio", escola: "da escola",
+};
+
 export function routeMessage(r: RouteResult): string {
   if (r.ok) return "Conseguimos! Você encontrou um caminho pelas ruas e passamos nas casas de todos os amigos antes de chegar à escola!";
   const e = r.error!;
@@ -73,7 +77,7 @@ export function routeMessage(r: RouteResult): string {
     case "order":
       return e.met === "escola"
         ? `Ainda não é hora da escola! Antes, precisamos buscar ${NAMES[e.expected]}.`
-        : `Opa! Passamos por ${NAMES[e.met]} antes da hora. Agora devemos buscar ${NAMES[e.expected]}.`;
+        : `Opa! Passamos pela casa ${DE[e.met]} antes da hora. Agora devemos buscar ${NAMES[e.expected]}.`;
     case "missingFriend":
       return `Falta buscar ${NAMES[e.expected]}. Continue o caminho!`;
     case "notAtSchool":
