@@ -21,6 +21,8 @@ export interface Target {
   y: number;
   /** quando presente, a validação é por área (quadra) e não por raio */
   rect?: { x0: number; y0: number; x1: number; y1: number };
+  /** quando presente, é onde o marcador aparece depois do acerto (pode diferir do ponto de validação) */
+  display?: { x: number; y: number };
 }
 
 /** Quadra do parque: leste da Rua Rosa, oeste da Av. Cravo, sul da Rua Girassol, norte da Rua Margarida. */
@@ -39,6 +41,13 @@ export interface Marker {
   phase: Phase;
 }
 
+/**
+ * Posição de exibição do parque. A casa do Davi fica dentro dessa mesma quadra,
+ * então o marcador é mostrado no lado oeste dela — longe o bastante para não
+ * encobrir a casa, mas ainda dentro da quadra validada.
+ */
+export const PARQUE_DISPLAY = { x: 398, y: 311 };
+
 /** 11 alvos — centros conferidos sobre resposta_parte1.png e resposta_parte2.png. */
 export const TARGETS: Target[] = [
   { id: "t-nina", phase: "houses", x: 646, y: 190 },
@@ -48,7 +57,7 @@ export const TARGETS: Target[] = [
   { id: "t-caio", phase: "houses", x: 536, y: 452 },
   { id: "t-escola", phase: "houses", x: 334, y: 391 },
   { id: "t-igreja", phase: "city", x: 603, y: 394 },
-  { id: "t-parque", phase: "city", x: (PARQUE_RECT.x0 + PARQUE_RECT.x1) / 2, y: (PARQUE_RECT.y0 + PARQUE_RECT.y1) / 2, rect: PARQUE_RECT },
+  { id: "t-parque", phase: "city", x: (PARQUE_RECT.x0 + PARQUE_RECT.x1) / 2, y: (PARQUE_RECT.y0 + PARQUE_RECT.y1) / 2, rect: PARQUE_RECT, display: PARQUE_DISPLAY },
   { id: "t-mercado", phase: "city", x: 610, y: 307 },
   { id: "t-shopping", phase: "city", x: 342, y: 185 },
   { id: "t-sorveteria", phase: "city", x: 516, y: 172 },
@@ -70,6 +79,12 @@ export const MARKERS: Marker[] = [
 
 /** Raio (unidades do viewBox) para considerar que um marcador caiu num alvo. */
 export const TARGET_RADIUS = 26;
+
+/** Caixa do marcador no mapa (unidades do viewBox) — usada para evitar sobreposição. */
+export const MARKER_BOX = { w: 46, h: 57.5 };
+
+/** Onde o marcador é desenhado: pode diferir do ponto usado na validação. */
+export const displayOf = (t: Target) => t.display ?? { x: t.x, y: t.y };
 
 export const markersOf = (phase: Phase) => MARKERS.filter((m) => m.phase === phase);
 export const targetById = (id: string) => TARGETS.find((t) => t.id === id)!;

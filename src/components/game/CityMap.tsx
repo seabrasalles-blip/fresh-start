@@ -45,7 +45,7 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
         {/* camada: quadras */}
         <g id="layer-blocks">
           {BLOCKS.map((b, i) => (
-            <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="var(--map-block)" stroke="var(--map-block-edge)" strokeWidth={1.2} />
+            <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} rx={4} fill="var(--map-block)" stroke="var(--map-block-edge)" strokeWidth={1} />
           ))}
           {/* beco do final da Rua Tulipa */}
           <rect
@@ -57,7 +57,7 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
           />
         </g>
         {/* camada: rótulos */}
-        <g id="layer-labels" fontFamily="Nunito, sans-serif" fontWeight={800} fontSize={10.5} fill="var(--map-label)" pointerEvents="none">
+        <g id="layer-labels" fontFamily="Nunito, sans-serif" fontWeight={900} fontSize={11.5} fill="var(--map-label)" pointerEvents="none">
           {LABELS.map((l) => (
             <text
               key={l.text}
@@ -66,7 +66,11 @@ export const CityMap = forwardRef<SVGSVGElement, Props>(function CityMap({ child
               textAnchor="middle"
               dominantBaseline="central"
               transform={l.vertical ? `rotate(90 ${l.x} ${l.y})` : undefined}
-              letterSpacing={0.4}
+              letterSpacing={0.5}
+              stroke="var(--card)"
+              strokeWidth={3}
+              strokeLinejoin="round"
+              paintOrder="stroke"
             >
               {l.text}
             </text>
