@@ -54,6 +54,7 @@
   --color-map-road: var(--map-road);
   --color-map-label: var(--map-label);
   --color-map-frame: var(--map-frame);
+  --color-map-screen: var(--map-screen);
   --color-route: var(--route);
   --color-route-node: var(--route-node);
   --font-display: "Baloo 2", system-ui, sans-serif;
@@ -112,6 +113,7 @@
   --map-road: oklch(0.975 0.005 100);
   --map-label: oklch(0.3 0.05 130);
   --map-frame: oklch(0.99 0.01 95);
+  --map-screen: oklch(0.974 0.008 151);
   --route: oklch(0.62 0.22 25);
   --route-node: oklch(0.55 0.15 255);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -156,6 +158,10 @@
 @keyframes pulse-ring {
   0%, 100% { opacity: 0.9; transform: scale(1); }
   50% { opacity: 0.3; transform: scale(1.35); }
+}
+
+.map-screen-backdrop {
+  background: var(--map-screen);
 }
 @utility animate-pulse-ring {
   animation: pulse-ring 1.4s ease-in-out infinite;
