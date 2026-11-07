@@ -23,9 +23,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Como chegar? — Atividade de mapas" },
-      { name: "description", content: "Ajude Nina e seus amigos a encontrar as casas no mapa de Florais e traçar o caminho até a escola." },
+      {
+        name: "description",
+        content: "Ajude Nina e seus amigos a encontrar as casas no mapa de Florais e traçar o caminho até a escola.",
+      },
       { property: "og:title", content: "Como chegar? — Atividade de mapas" },
-      { property: "og:description", content: "Leitura de mapas, endereços e trajetos pelas ruas da cidade de Florais." },
+      {
+        property: "og:description",
+        content: "Leitura de mapas, endereços e trajetos pelas ruas da cidade de Florais.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -34,8 +40,18 @@ export const Route = createFileRoute("/")({
 });
 
 type Screen =
-  | "cover" | "intro" | "locations" | "locationsFeedback" | "routeIntro" | "route"
-  | "routeFeedback" | "routeChallenge" | "cityIntro" | "cityLocations" | "end" | "review";
+  | "cover"
+  | "intro"
+  | "locations"
+  | "locationsFeedback"
+  | "routeIntro"
+  | "route"
+  | "routeFeedback"
+  | "routeChallenge"
+  | "cityIntro"
+  | "cityLocations"
+  | "end"
+  | "review";
 
 type Feedback = { kind: "info" | "warn" | "success"; text: string } | null;
 
@@ -63,13 +79,20 @@ function Index() {
   const [attempts, setAttempts] = useState<string[][]>([]);
 
   const reset = () => {
-    setPlacements({}); setLocked([]); setPlaceFb(null); setRoute([START_NODE]); setRouteFb(null); setAttempts([]); setScreen("cover");
+    setPlacements({});
+    setLocked([]);
+    setPlaceFb(null);
+    setRoute([START_NODE]);
+    setRouteFb(null);
+    setAttempts([]);
+    setScreen("cover");
   };
 
   const onPlace = (id: string, pos: Pos | null) => {
     setPlacements((p) => {
       const n = { ...p };
-      if (pos) n[id] = pos; else delete n[id];
+      if (pos) n[id] = pos;
+      else delete n[id];
       return n;
     });
     setPlaceFb(null);
@@ -80,7 +103,13 @@ function Index() {
     for (const id of ids) if (placements[id]) asTargets[id] = targetAt(placements[id].x, placements[id].y, phase);
     const r = validatePlacement(ids, asTargets);
     if (r.missing.length) {
-      setPlaceFb({ kind: "warn", text: r.missing.length === 1 ? "Ainda falta colocar 1 marcador no mapa." : `Ainda faltam ${r.missing.length} marcadores no mapa.` });
+      setPlaceFb({
+        kind: "warn",
+        text:
+          r.missing.length === 1
+            ? "Ainda falta colocar 1 marcador no mapa."
+            : `Ainda faltam ${r.missing.length} marcadores no mapa.`,
+      });
       return;
     }
     setLocked((l) => [...new Set([...l, ...r.correct])]);
@@ -95,7 +124,13 @@ function Index() {
       return n;
     });
     if (r.wrong.length) {
-      setPlaceFb({ kind: "warn", text: r.wrong.length === 1 ? "1 marcador precisa de revisão. Ele voltou para o banco. Leia a pista de novo!" : `${r.wrong.length} marcadores precisam de revisão. Eles voltaram para o banco. Leia as pistas de novo!` });
+      setPlaceFb({
+        kind: "warn",
+        text:
+          r.wrong.length === 1
+            ? "1 marcador precisa de revisão. Ele voltou para o banco. Leia a pista de novo!"
+            : `${r.wrong.length} marcadores precisam de revisão. Eles voltaram para o banco. Leia as pistas de novo!`,
+      });
       return;
     }
     setPlaceFb({ kind: "success", text: successText });
@@ -114,7 +149,8 @@ function Index() {
     : " Ainda existe um caminho um pouco mais curto, se quiser procurar.";
   const routeOkText =
     cmp === "shorter"
-      ? "Muito bem! O seu segundo caminho é mais curto que o primeiro: você descobriu um jeito melhor de passar pelas casas na mesma ordem!" + minNote
+      ? "Muito bem! O seu segundo caminho é mais curto que o primeiro: você descobriu um jeito melhor de passar pelas casas na mesma ordem!" +
+        minNote
       : cmp === "longer"
         ? "Os dois caminhos passaram pelas casas na ordem certa! Desta vez o primeiro foi o mais curto. Se quiser, pode tentar de novo."
         : cmp === "same"
@@ -125,13 +161,21 @@ function Index() {
             ? "Você encontrou o caminho mais curto, passando pelas casas na ordem certa. Parabéns!"
             : "Você passou pelas casas na ordem certa e chegou à escola! Seu caminho está bem perto do mais curto. Se quiser, pode tentar encurtar mais um pouquinho.";
   const canRetry = attempts.length > 0 && !lastIsMin;
-  const retryRoute = () => { setRoute([START_NODE]); setRouteFb(null); setScreen("route"); };
+  const retryRoute = () => {
+    setRoute([START_NODE]);
+    setRouteFb(null);
+    setScreen("route");
+  };
 
   return (
     <Stage>
       {screen === "cover" && (
         <div className="relative h-full w-full">
-          <img src={capa.url} alt="Como chegar? — Nina e Davi na cidade de Florais" className="absolute inset-0 h-full w-full object-cover" />
+          <img
+            src={capa.url}
+            alt="Como chegar? — Nina e Davi na cidade de Florais"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-x-0 bottom-14 flex justify-center">
             <Button variant="game" size="hero" onClick={() => setScreen("intro")} autoFocus>
               <Play /> Iniciar
@@ -145,8 +189,16 @@ function Index() {
           character={ninaApresentando.url}
           characterAlt="Nina sorrindo"
           name="Nina"
-          text="Oi! Eu sou a Nina! Eu e meus amigos vamos juntos para a escola. Saio de casa e encontro cada um pelo caminho. Mas preciso da sua ajuda! Primeiro, vamos descobrir onde ficam nossas casas. Depois, vamos traçar o caminho até a escola. Você nos ajuda?"
-          actions={<Button variant="game" size="game" onClick={() => setScreen("locations")}>Vamos começar! <ArrowRight /></Button>}
+          text="Oi! Eu sou a Nina! Todos os dias, eu e meus amigos vamos juntos para a escola. Saio da minha casa e, pelo caminho, vou encontrando cada um deles. Mas hoje temos um desafio especial e precisamos da sua ajuda!
+
+Primeiro, vamos descobrir onde ficam nossas casas. Depois, você vai nos ajudar a encontrar um caminho pelas ruas da cidade até a escola.
+
+**Vamos começar essa aventura?**"
+          actions={
+            <Button variant="game" size="game" onClick={() => setScreen("locations")}>
+              Vamos começar! <ArrowRight />
+            </Button>
+          }
         />
       )}
 
@@ -158,9 +210,14 @@ function Index() {
           onPlace={onPlace}
           locked={locked}
           feedback={placeFb}
-          onVerify={() => verify("houses", HOUSE_IDS, "Muito bem! Você encontrou todas as casas e a escola!", "locationsFeedback")}
+          onVerify={() =>
+            verify("houses", HOUSE_IDS, "Muito bem! Você encontrou todas as casas e a escola!", "locationsFeedback")
+          }
           done={screen === "locationsFeedback"}
-          onAdvance={() => { setPlaceFb(null); setScreen("routeIntro"); }}
+          onAdvance={() => {
+            setPlaceFb(null);
+            setScreen("routeIntro");
+          }}
           helpItems={PLACE_HELP}
         />
       )}
@@ -171,7 +228,11 @@ function Index() {
           characterAlt="Nina explicando"
           name="Nina"
           text="Já sabemos onde fica cada casa! Agora vamos descobrir por quais ruas precisamos passar para encontrar todo mundo e chegar à escola. Começamos na minha casa. Primeiro buscamos a Bia, depois a Helena, o Davi e o Caio. Por último, vamos à escola!"
-          actions={<Button variant="game" size="game" onClick={() => setScreen("route")}><RouteIcon /> Traçar caminho</Button>}
+          actions={
+            <Button variant="game" size="game" onClick={() => setScreen("route")}>
+              <RouteIcon /> Traçar caminho
+            </Button>
+          }
         />
       )}
 
@@ -186,7 +247,10 @@ function Index() {
           note={attempts.length ? "Seu primeiro caminho está guardado. Tente um mais curto!" : undefined}
           onVerify={() => {
             const r = validateRoute(route);
-            if (!r.ok) { setRouteFb({ kind: "warn", text: routeMessage(r) }); return; }
+            if (!r.ok) {
+              setRouteFb({ kind: "warn", text: routeMessage(r) });
+              return;
+            }
             setRouteFb(null);
             if (attempts.length === 0) {
               setAttempts([route]);
@@ -212,7 +276,9 @@ function Index() {
                   <RotateCcw /> Tentar de novo
                 </Button>
               )}
-              <Button variant="game" size="game" onClick={() => setScreen("cityIntro")}>Continuar <ArrowRight /></Button>
+              <Button variant="game" size="game" onClick={() => setScreen("cityIntro")}>
+                Continuar <ArrowRight />
+              </Button>
             </>
           }
         />
@@ -243,7 +309,18 @@ function Index() {
           characterAlt="Davi apresentando"
           name="Davi"
           text="Agora que você já conhece nosso caminho para a escola, que tal descobrir onde ficam outros lugares da nossa cidade?"
-          actions={<Button variant="game" size="game" onClick={() => { setPlaceFb(null); setScreen("cityLocations"); }}>Continuar <ArrowRight /></Button>}
+          actions={
+            <Button
+              variant="game"
+              size="game"
+              onClick={() => {
+                setPlaceFb(null);
+                setScreen("cityLocations");
+              }}
+            >
+              Continuar <ArrowRight />
+            </Button>
+          }
         />
       )}
 
@@ -256,7 +333,9 @@ function Index() {
           locked={locked}
           background={HOUSE_IDS}
           feedback={placeFb}
-          onVerify={() => verify("city", CITY_IDS, "Muito bem! Você encontrou todos os lugares da cidade!", "cityLocations")}
+          onVerify={() =>
+            verify("city", CITY_IDS, "Muito bem! Você encontrou todos os lugares da cidade!", "cityLocations")
+          }
           done={CITY_IDS.every((id) => locked.includes(id))}
           onAdvance={() => setScreen("end")}
           helpItems={PLACE_HELP}
@@ -272,8 +351,12 @@ function Index() {
           text="Você descobriu endereços, encontrou caminhos pelas ruas e conheceu lugares da cidade! Um mapa pode nos ajudar a chegar a muitos destinos."
           actions={
             <>
-              <Button variant="gameBlue" size="game" onClick={() => setScreen("review")}><Map /> Ver meu caminho</Button>
-              <Button variant="game" size="game" onClick={reset}><RotateCcw /> Recomeçar</Button>
+              <Button variant="gameBlue" size="game" onClick={() => setScreen("review")}>
+                <Map /> Ver meu caminho
+              </Button>
+              <Button variant="game" size="game" onClick={reset}>
+                <RotateCcw /> Recomeçar
+              </Button>
             </>
           }
         />
