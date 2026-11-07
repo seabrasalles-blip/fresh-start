@@ -189,9 +189,7 @@ function Index() {
           character={ninaApresentando.url}
           characterAlt="Nina sorrindo"
           name="Nina"
-          text="Oi! Eu sou a Nina! Todos os dias, eu e meus amigos vamos juntos para a escola. Saio da minha casa e, pelo caminho, vou encontrando cada um deles. Mas hoje temos um desafio especial e precisamos da sua ajuda!
-
-Primeiro, vamos descobrir onde ficam nossas casas. Depois, você vai nos ajudar a encontrar um caminho pelas ruas da cidade até a escola.
+          text="Oi! Eu sou a Nina! Todos os dias, eu e meus amigos vamos juntos para a escola. Saio da minha casa e, pelo caminho, vou encontrando cada um deles. Mas hoje temos um desafio especial e precisamos da sua ajuda!Primeiro, vamos descobrir onde ficam nossas casas. Depois, você vai nos ajudar a encontrar um caminho pelas ruas da cidade até a escola.
 
 **Vamos começar essa aventura?**"
           actions={
